@@ -4,9 +4,6 @@ require_once __DIR__ . '/../includes/helpers.php';
 
 requireAdmin();
 
-// ------------------------------------------------------------
-// Delete (form POST)
-// ------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
     if (!verifyCsrf()) {
         setFlash('error', 'Sesi kedaluwarsa. Coba lagi.');
@@ -18,9 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
     redirect('/admin/bookings.php');
 }
 
-// ------------------------------------------------------------
-// List + search
-// ------------------------------------------------------------
 $search = trim($_GET['q'] ?? '');
 
 $sql = 'SELECT d.id, d.user_id, d.booker_name, d.boarding_house_name, d.room_name, d.contact,

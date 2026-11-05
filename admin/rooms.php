@@ -5,10 +5,6 @@ require_once __DIR__ . '/../includes/upload.php';
 
 requireAdmin();
 
-// ------------------------------------------------------------
-// Delete (form POST). Also used by the Pilihan Kamar cards on the
-// kost edit page, which send "from_house" so we can go back there.
-// ------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
     $fromHouse  = (int) ($_POST['from_house'] ?? 0);
     $redirectTo = $fromHouse > 0
@@ -50,9 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
     redirect($redirectTo);
 }
 
-// ------------------------------------------------------------
-// List + search
-// ------------------------------------------------------------
 $search = trim($_GET['q'] ?? '');
 
 $sql = 'SELECT r.id, r.name, r.room_type, r.price_per_month, r.status, r.photo, b.name AS house_name

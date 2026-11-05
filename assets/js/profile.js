@@ -1,5 +1,3 @@
-// Profile page: "Edit Profil" unlocks the fields, eye buttons show/hide passwords,
-// and the chosen profile photo is previewed before saving.
 const profileForm = document.getElementById('profile-form');
 
 if (profileForm) {
@@ -49,7 +47,6 @@ if (profileForm) {
         setEditing(true);
     }
 
-    // Eye buttons
     profileForm.querySelectorAll('[data-toggle-password]').forEach((button) => {
         button.addEventListener('click', () => {
             const input = document.getElementById(button.dataset.togglePassword);
@@ -63,7 +60,6 @@ if (profileForm) {
         });
     });
 
-    // Photo preview
     const photoInput = document.getElementById('profile_photo');
     const avatarPreview = document.getElementById('avatar-preview');
 

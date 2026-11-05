@@ -5,9 +5,6 @@ require_once __DIR__ . '/../includes/upload.php';
 
 requireAdmin();
 
-// ------------------------------------------------------------
-// Delete (form POST from the Delete button)
-// ------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
     if (!verifyCsrf()) {
         setFlash('error', 'Sesi kedaluwarsa. Coba lagi.');
@@ -55,9 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
     redirect('/admin/boarding_houses.php');
 }
 
-// ------------------------------------------------------------
-// List + search
-// ------------------------------------------------------------
 $search = trim($_GET['q'] ?? '');
 
 if ($search !== '') {

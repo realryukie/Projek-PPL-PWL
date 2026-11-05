@@ -1,4 +1,3 @@
-// Product Desc (visitor view): the "Pilih kamar ini" button fills the booking form.
 document.querySelectorAll('[data-choose-room]').forEach((button) => {
     button.addEventListener('click', () => {
         const select = document.getElementById('room_id');
@@ -17,7 +16,6 @@ document.querySelectorAll('[data-choose-room]').forEach((button) => {
     });
 });
 
-// Photo slider (cover photo + gallery)
 document.querySelectorAll('[data-gallery]').forEach((gallery) => {
     const slides = gallery.querySelectorAll('.gallery__slide');
     const dots = gallery.querySelectorAll('.gallery__dot');

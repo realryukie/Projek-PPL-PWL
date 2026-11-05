@@ -16,14 +16,11 @@ if (!in_array($mode, ['add', 'edit'], true)) {
     exit;
 }
 
-requireAdmin(); // everything below is admin only
+requireAdmin();
 
-// ------------------------------------------------------------
-// Load the existing record (edit mode)
-// ------------------------------------------------------------
-$savedPhoto    = null; // cover photo currently stored in the database
+$savedPhoto    = null;
 $savedHouse    = null;
-$galleryImages = []; // extra photos (table boarding_house_images)
+$galleryImages = [];
 
 $form = [
     'name'            => '',
@@ -64,9 +61,6 @@ if ($mode === 'edit') {
     }
 }
 
-// ------------------------------------------------------------
-// Save (form POST)
-// ------------------------------------------------------------
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -79,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Sesi kedaluwarsa. Coba lagi.';
     }
 
-    // --- validate the text fields ---
     if ($form['name'] === '' || mb_strlen($form['name']) > 150) {
         $errors[] = 'Nama kost wajib diisi (maksimal 150 karakter).';
     }
@@ -132,14 +125,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // --- photo (optional) ---
     $newPhoto = null;
     $photoFile = $_FILES['photo'] ?? null;
     if (empty($errors) && $photoFile && $photoFile['error'] !== UPLOAD_ERR_NO_FILE) {
         $newPhoto = saveUploadedImage($photoFile, 'boarding_houses', $errors);
     }
 
-    // --- gallery photos (optional, several at once) ---
     $deleteImageIds = array_map('intval', (array) ($_POST['delete_images'] ?? []));
     $newGallery     = [];
     if (empty($errors)) {
@@ -174,7 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newPhoto = null;
     }
 
-    // --- write to the database ---
     if (empty($errors)) {
         $description = $form['description'] === '' ? null : $form['description'];
 
@@ -229,9 +219,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// ------------------------------------------------------------
-// Values used by the page
-// ------------------------------------------------------------
 $photoUrl = uploadUrl('boarding_houses', $savedPhoto);
 
 // Room options of this kost (only in edit mode, the kost must be saved first)

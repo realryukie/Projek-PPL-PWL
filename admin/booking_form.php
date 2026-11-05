@@ -13,7 +13,6 @@ if (!in_array($mode, ['add', 'edit'], true)) {
 
 $statuses = ['pending', 'confirmed', 'rejected', 'cancelled', 'completed'];
 
-// All rooms (with their kost) for the dropdown
 $rooms   = fetchAllPrepared(
     $conn,
     'SELECT r.id, r.name, r.price_per_month, b.name AS house_name
@@ -43,9 +42,6 @@ if ($mode === 'edit') {
     }
 }
 
-// ------------------------------------------------------------
-// Save (form POST)
-// ------------------------------------------------------------
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

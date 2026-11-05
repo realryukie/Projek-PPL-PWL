@@ -4,7 +4,7 @@
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/helpers.php';
 
-requireAdmin(); // safety net: nobody but admins gets past this line
+requireAdmin();
 
 $pageTitle  = $pageTitle ?? 'Admin Panel';
 $activeMenu = $activeMenu ?? '';

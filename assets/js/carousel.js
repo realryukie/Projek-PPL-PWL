@@ -1,4 +1,3 @@
-// Hero carousel on the Home page: auto-advances and can be changed with the dots.
 document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     const slides = carousel.querySelectorAll('.hero__slide');
     const dots = carousel.querySelectorAll('.hero__dot');

@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
 
-// Already logged in? Send them to the public home page.
 if (isLoggedIn()) {
     redirect('/index.php');
 }

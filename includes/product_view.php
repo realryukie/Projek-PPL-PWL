@@ -35,7 +35,6 @@ if ($userId) {
     $currentUser = $userRows[0] ?? null;
 }
 
-// Booking form values (prefilled from the profile)
 $bookingForm = [
     'booker_name'   => $currentUser['name'] ?? '',
     'contact'       => phoneWithCountryCode($currentUser['country_code'] ?? null, $currentUser['phone_number'] ?? null),
@@ -51,9 +50,6 @@ $bookingErrors = [];
 $reviewErrors  = [];
 $reviewForm    = ['rating' => '', 'comment' => ''];
 
-// ------------------------------------------------------------
-// Actions (favorite / book / review)
-// ------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
@@ -69,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('/auth/login.php');
     }
 
-    // ---------- Add / remove favorite ----------
     if ($action === 'favorite') {
         $existing = fetchAllPrepared(
             $conn,
@@ -88,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect($self);
     }
 
-    // ---------- Booking ----------
     if ($action === 'book') {
         foreach ($bookingForm as $field => $default) {
             $bookingForm[$field] = trim($_POST[$field] ?? '');
@@ -180,7 +174,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // ---------- Feedback ----------
     if ($action === 'review') {
         $reviewForm['rating']  = trim($_POST['rating'] ?? '');
         $reviewForm['comment'] = trim($_POST['comment'] ?? '');
@@ -208,9 +201,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// ------------------------------------------------------------
-// Data shown on the page
-// ------------------------------------------------------------
 $isFavorite = false;
 if ($userId) {
     $isFavorite = !empty(fetchAllPrepared(

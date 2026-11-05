@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
 
-// Already logged in? No need to register again.
 if (isLoggedIn()) {
     redirect('/index.php');
 }
@@ -27,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
         try {
-            // role is not set here: the database default is 'user'
             $stmt = $conn->prepare('INSERT INTO users (email, password) VALUES (?, ?)');
             $stmt->execute([$email, $passwordHash]);
 

@@ -1,4 +1,3 @@
-// Shows a preview of the chosen photo before the form is saved.
 const photoInput = document.getElementById('photo');
 const photoPreview = document.getElementById('photo-preview');
 const cityInput = document.getElementById('city');

@@ -11,7 +11,6 @@ if (!in_array($tab, ['account', 'history', 'favorites'], true)) {
     $tab = 'account';
 }
 
-// Country codes for the phone dropdown
 $countryCodes = [
     '+62'  => "\u{1F1EE}\u{1F1E9} Indonesia (+62)",
     '+60'  => "\u{1F1F2}\u{1F1FE} Malaysia (+60)",
@@ -28,7 +27,7 @@ $countryCodes = [
 $userRows = fetchAllPrepared($conn, 'SELECT * FROM users WHERE id = ?', 'i', [$userId]);
 $user     = $userRows[0] ?? null;
 if (!$user) {
-    redirect('/auth/logout.php'); // account no longer exists
+    redirect('/auth/logout.php');
 }
 
 $errors = [];
@@ -41,9 +40,6 @@ $form   = [
 ];
 $startEditing = false;
 
-// ------------------------------------------------------------
-// Actions
-// ------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
@@ -52,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('/profile.php?tab=' . $tab);
     }
 
-    // ---------- Booking history ----------
     if ($action === 'delete_history') {
         // Soft delete: only hidden from the user, the admin still sees the booking
         executePrepared(
@@ -71,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('/profile.php?tab=history');
     }
 
-    // ---------- Favorites ----------
     if ($action === 'remove_favorite') {
         executePrepared(
             $conn,
@@ -89,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('/profile.php?tab=favorites');
     }
 
-    // ---------- Edit profile ----------
     if ($action === 'update_profile') {
         $tab = 'account';
         foreach ($form as $field => $default) {
@@ -124,7 +117,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Profile photo (optional)
         $newPhoto  = null;
         $photoFile = $_FILES['profile_photo'] ?? null;
         if (empty($errors) && $photoFile && $photoFile['error'] !== UPLOAD_ERR_NO_FILE) {
@@ -178,9 +170,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// ------------------------------------------------------------
-// Data for the active tab
-// ------------------------------------------------------------
 $displayName = $user['name'] !== null && $user['name'] !== '' ? $user['name'] : $user['email'];
 $avatarUrl   = uploadUrl('profiles', $user['profile_photo']);
 

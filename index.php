@@ -4,7 +4,6 @@ require_once __DIR__ . '/includes/helpers.php';
 require_once __DIR__ . '/includes/upload.php';
 require_once __DIR__ . '/includes/cards.php';
 
-// Hero banners (images live in assets/img/banners/, file names come from the banners table)
 $banners = fetchAllPrepared($conn, 'SELECT id, title, image FROM banners WHERE is_active = 1 ORDER BY sort_order, id');
 
 $slides = [];
@@ -29,7 +28,6 @@ for ($index = count($slides); $index < 3; $index++) {
     $slides[] = $defaultSlides[$index];
 }
 
-// Recommendations: available first, then best rated
 $recommended = fetchAllPrepared(
     $conn,
     "SELECT * FROM v_boarding_house_summary

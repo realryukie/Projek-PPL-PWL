@@ -1,7 +1,5 @@
 <?php
-// ------------------------------------------------------------
 // App settings
-// ------------------------------------------------------------
 // Derive the URL prefix from the project location under the web server root.
 $projectRoot = realpath(dirname(__DIR__));
 $documentRoot = isset($_SERVER['DOCUMENT_ROOT']) ? realpath($_SERVER['DOCUMENT_ROOT']) : false;
@@ -28,9 +26,7 @@ if ($projectRoot !== false && $documentRoot !== false) {
 
 define('BASE_URL', $baseUrl);
 
-// ------------------------------------------------------------
 // Database settings (Laragon defaults)
-// ------------------------------------------------------------
 $dbHost = 'localhost';
 $dbUser = 'root';
 $dbPass = '';

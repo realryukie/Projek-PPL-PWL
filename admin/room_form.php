@@ -12,18 +12,11 @@ if (!in_array($mode, ['add', 'edit'], true)) {
     redirect('/admin/rooms.php');
 }
 
-// "from=house" means the admin came from the Pilihan Kamar section of a kost edit page
 $fromHouse = ($_GET['from'] ?? $_POST['from'] ?? '') === 'house';
 
-// ------------------------------------------------------------
-// Boarding houses for the dropdown
-// ------------------------------------------------------------
 $houses   = fetchAllPrepared($conn, 'SELECT id, name, city FROM boarding_houses ORDER BY name');
 $houseIds = array_map('intval', array_column($houses, 'id'));
 
-// ------------------------------------------------------------
-// Load the existing room (edit) or the preset kost (add)
-// ------------------------------------------------------------
 $form = [
     'boarding_house_id' => '',
     'name'              => '',
@@ -56,9 +49,6 @@ if ($mode === 'edit') {
     }
 }
 
-// ------------------------------------------------------------
-// Save (form POST)
-// ------------------------------------------------------------
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -91,14 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Harga per bulan harus berupa angka bulat (tanpa titik atau koma).';
     }
 
-    // --- photo (optional) ---
     $newPhoto  = null;
     $photoFile = $_FILES['photo'] ?? null;
     if (empty($errors) && $photoFile && $photoFile['error'] !== UPLOAD_ERR_NO_FILE) {
         $newPhoto = saveUploadedImage($photoFile, 'rooms', $errors);
     }
 
-    // --- write to the database ---
     if (empty($errors)) {
         $description = $form['description'] === '' ? null : $form['description'];
 
@@ -151,9 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// ------------------------------------------------------------
-// Values used by the page
-// ------------------------------------------------------------
 $photoUrl = uploadUrl('rooms', $savedPhoto);
 
 $backHouseId = (int) $form['boarding_house_id'];
@@ -163,7 +148,7 @@ $backUrl = ($fromHouse && $backHouseId > 0)
 
 $pageTitle  = $mode === 'add' ? 'Tambah Kamar' : 'Edit Kamar';
 $activeMenu = 'rooms';
-$extraJs    = ['product_desc.js']; // photo preview
+$extraJs    = ['product_desc.js'];
 require __DIR__ . '/../includes/admin_header.php';
 ?>
             <h1><?= $mode === 'add' ? 'Tambah Kamar' : 'Edit Kamar' ?></h1>

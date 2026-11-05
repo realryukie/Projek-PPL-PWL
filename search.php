@@ -4,9 +4,6 @@ require_once __DIR__ . '/includes/helpers.php';
 require_once __DIR__ . '/includes/upload.php';
 require_once __DIR__ . '/includes/cards.php';
 
-// ------------------------------------------------------------
-// Read the search values from the URL
-// ------------------------------------------------------------
 $queryString = static function (string $key, string $default = ''): string {
     $value = $_GET[$key] ?? $default;
     return is_string($value) ? trim($value) : $default;
@@ -33,9 +30,6 @@ if (!in_array($sort, ['recommended', 'price_asc', 'price_desc', 'newest'], true)
     $sort = 'recommended';
 }
 
-// ------------------------------------------------------------
-// Build the WHERE part (every value goes through a prepared parameter)
-// ------------------------------------------------------------
 $where  = [];
 $types  = '';
 $params = [];
@@ -103,9 +97,6 @@ $orderSql = [
     'newest'      => 's.id DESC',
 ][$sort];
 
-// ------------------------------------------------------------
-// Count + page of results
-// ------------------------------------------------------------
 $countRows  = fetchAllPrepared($conn, "SELECT COUNT(*) AS total FROM v_boarding_house_summary s $whereSql", $types, $params);
 $totalItems = (int) $countRows[0]['total'];
 $totalPages = max(1, (int) ceil($totalItems / $perPage));
@@ -120,7 +111,6 @@ $houses = fetchAllPrepared(
 );
 $houses = resolveHouseCardPhotos($conn, $houses);
 
-// Link to another page of the same search
 function searchPageUrl(int $targetPage): string
 {
     $query = $_GET;
