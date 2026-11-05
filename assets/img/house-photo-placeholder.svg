@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-labelledby="title">
+  <title id="title">Foto kost belum tersedia</title>
+  <rect width="640" height="400" fill="#efedf6"/>
+  <path d="M0 310h640v90H0z" fill="#e2e0eb"/>
+  <path d="m182 194 138-105 138 105v131H182z" fill="#fff" stroke="#8a86ad" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M156 199 320 74l164 125" fill="none" stroke="#4f4496" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M293 325v-84a27 27 0 0 1 54 0v84M214 222h46v46h-46zM380 222h46v46h-46z" fill="#d9d6e7" stroke="#8a86ad" stroke-width="7" stroke-linejoin="round"/>
+  <text x="320" y="370" fill="#6d6b80" font-family="Arial, sans-serif" font-size="20" text-anchor="middle">Foto kost belum tersedia</text>
+</svg>

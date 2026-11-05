@@ -1,0 +1,431 @@
+/* Product Desc page - visitor view (loaded together with product_desc.css) */
+
+.product-info h1 {
+    margin: 0;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 35.2px;
+    line-height: 1.15;
+}
+
+.product-address {
+    margin: 3.2px 0 16px;
+    color: var(--muted);
+    font-size: 13.6px;
+}
+
+.product-desc {
+    min-height: 48px;
+    margin: 0 0 16px;
+    font-size: 14.72px;
+    line-height: 1.6;
+}
+
+.info-list {
+    margin: 0 0 16px;
+}
+
+.info-list > div {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 5.6px;
+    font-size: 14.4px;
+}
+
+.info-list dt {
+    min-width: 62px;
+    font-weight: 700;
+}
+
+.info-list dd {
+    margin: 0;
+}
+
+.info-list a {
+    color: var(--green-dark);
+    font-weight: 600;
+}
+
+.favorite-button {
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: #d9d9d9;
+    color: #111;
+    font: inherit;
+    font-size: 13.6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.favorite-button:hover {
+    background: #cbcbcb;
+}
+
+.favorite-button.is-active {
+    background: #f1d6d2;
+    color: #8f3a32;
+}
+
+.favorite-button:focus-visible {
+    outline: 3px solid var(--green);
+    outline-offset: 2px;
+}
+
+.booking-form h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+}
+
+.booking-form .btn[disabled] {
+    background: #b9b9b9;
+    cursor: not-allowed;
+}
+
+/* ---------- Feedback ---------- */
+
+.rating-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.stars {
+    color: #e0a526;
+    font-size: 25.6px;
+    letter-spacing: 1.6px;
+}
+
+.rating-text {
+    color: var(--muted);
+    font-size: 14.4px;
+}
+
+.review-form {
+    max-width: 640px;
+}
+
+.star-input {
+    margin: 0 0 12px;
+    padding: 0;
+    border: 0;
+}
+
+.star-input legend {
+    margin-bottom: 4.8px;
+    padding: 0;
+    font-size: 14.4px;
+    font-weight: 700;
+}
+
+/* Stars are written 5 -> 1 and shown reversed, so "checked ~ label" colors the lower stars too */
+.star-input__stars {
+    display: inline-flex;
+    flex-direction: row-reverse;
+}
+
+.star-input__stars input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.star-input__stars label {
+    padding: 0 1.6px;
+    color: #c9c4b8;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.star-input__stars input:checked ~ label,
+.star-input__stars label:hover,
+.star-input__stars label:hover ~ label {
+    color: #e0a526;
+}
+
+.star-input__stars input:focus-visible + label {
+    outline: 3px solid var(--green);
+    outline-offset: 2px;
+}
+
+.review-list {
+    max-width: 640px;
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.review-list li {
+    margin-bottom: 12px;
+    padding: 12.8px 16px;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.review-list__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 9.6px;
+}
+
+.review-list__head .stars {
+    font-size: 16px;
+}
+
+.review-list__head small {
+    margin-left: auto;
+    color: var(--muted);
+}
+
+.review-list p {
+    margin: 5.6px 0 0;
+    font-size: 14.08px;
+    line-height: 1.5;
+}
+
+/* ---------- Photo slider ---------- */
+
+.gallery {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--grey-box);
+}
+
+.gallery__slide {
+    position: absolute;
+    inset: 0;
+    background: var(--grey-box) center / cover no-repeat;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.gallery__slide.is-active {
+    opacity: 1;
+}
+
+.gallery__nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    padding: 0 0 4px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 25.6px;
+    line-height: 1;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.gallery__nav:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.gallery__nav--prev {
+    left: 8px;
+}
+
+.gallery__nav--next {
+    right: 8px;
+}
+
+.gallery__dots {
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    gap: 6.4px;
+}
+
+.gallery__dot {
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    cursor: pointer;
+}
+
+.gallery__dot.is-active {
+    background: #fff;
+}
+
+.gallery__nav:focus-visible,
+.gallery__dot:focus-visible {
+    outline: 3px solid var(--green);
+    outline-offset: 2px;
+}
+
+.booking-estimate {
+    min-height: 22.4px;
+    margin: 0 0 12px;
+    color: var(--green-dark);
+    font-size: 13.6px;
+    font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gallery__slide {
+        transition: none;
+    }
+}
+
+/* ---------- Colored design updates ---------- */
+
+.product-top .photo-box,
+.gallery {
+    border-radius: 8px;
+}
+
+.product-address {
+    color: #9a968f;
+}
+
+.product-info h1 {
+    font-size: 32px;
+}
+
+/* Compact booking form: label on the left, field on the right */
+.booking-form .field {
+    display: grid;
+    grid-template-columns: minmax(120px, 0.7fr) minmax(0, 1.3fr);
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7.2px;
+}
+
+.booking-form__date-fields {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+}
+
+.booking-form .field label {
+    margin: 0;
+    font-size: 14.4px;
+    font-weight: 500;
+}
+
+.booking-form .field input,
+.booking-form .field select {
+    min-height: 38px;
+    padding: 7.2px 10.4px;
+    border: 1px solid #bdbdbd;
+    border-radius: 7px;
+    font-size: 14.72px;
+}
+
+.booking-form h3 {
+    font-size: 15.2px;
+}
+
+/* Feedback: stars, average and prompt on one row */
+.review-form {
+    max-width: none;
+}
+
+.feedback-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    margin-bottom: 14.4px;
+}
+
+.feedback-rating {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.rating-text {
+    color: #8a8680;
+    font-size: 13.6px;
+}
+
+.feedback-prompt {
+    margin-left: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 14.4px;
+}
+
+.star-input__stars label {
+    color: transparent;
+    -webkit-text-stroke: 1.5px #111;
+    font-size: 33.6px;
+}
+
+.star-input__stars input:checked ~ label,
+.star-input__stars label:hover,
+.star-input__stars label:hover ~ label {
+    color: #e0a526;
+    -webkit-text-stroke-color: #a87400;
+}
+
+.review-form textarea {
+    display: block;
+    width: 100%;
+    min-height: 150px;
+    padding: 12.8px 16px;
+    border: 1px solid #e7e4df;
+    border-radius: 14px;
+    background: #fff;
+    color: #222;
+    font: inherit;
+    resize: vertical;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.review-form textarea::placeholder {
+    color: #999;
+    font-size: 12.48px;
+}
+
+.review-form textarea:focus-visible {
+    outline: 3px solid var(--green);
+    outline-offset: 2px;
+}
+
+.feedback-actions {
+    margin-top: 14.4px;
+    text-align: center;
+}
+
+.feedback-actions .btn {
+    min-width: 160px;
+    background: var(--green);
+    color: #fff;
+}
+
+.feedback-actions .btn:hover {
+    background: var(--green-dark);
+}
+
+.review-form > .hint {
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .feedback-top {
+        align-items: flex-start;
+    }
+
+    .feedback-prompt {
+        width: 100%;
+        margin-left: 0;
+    }
+}

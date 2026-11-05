@@ -1,0 +1,68 @@
+/* Cari Kos page */
+
+.search-results {
+    max-width: 1240px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+
+.result-count {
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 14.4px;
+}
+
+.search-results .house-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17.6px;
+}
+
+.search-results .pagination {
+    gap: 10.4px;
+    margin-top: 16px;
+}
+
+.search-results .pagination a,
+.search-results .pagination span {
+    min-width: 24px;
+    padding: 4px;
+    border: 0;
+    background: transparent;
+}
+
+.search-results .pagination a:hover {
+    color: var(--green);
+}
+
+.search-results .pagination .is-current {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.empty-state {
+    padding: 48px 16px;
+    text-align: center;
+}
+
+.empty-state p {
+    margin: 0 0 16px;
+    color: var(--muted);
+}
+
+@media (max-width: 1000px) {
+    .search-results .house-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .search-results .house-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .search-results .house-grid {
+        gap: 11.2px;
+    }
+}

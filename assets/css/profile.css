@@ -1,0 +1,367 @@
+/* Profile page: Detail Akun / Histori Pemesanan / Favorit */
+
+[hidden] {
+    display: none !important;
+}
+
+.profile-layout {
+    display: flex;
+    flex: 1;
+    min-height: calc(100vh - 60px);
+}
+
+.profile-sidebar {
+    display: flex;
+    flex: 0 0 250px;
+    flex-direction: column;
+    position: sticky;
+    top: 60px;
+    align-self: flex-start;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+    padding: 40px 0 24px;
+    background: var(--dark);
+    color: #fff;
+}
+
+.profile-sidebar h2 {
+    display: inline-block;
+    align-self: flex-start;
+    margin: 0 32px 16px;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 17.6px;
+}
+
+.profile-sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5.6px;
+    padding: 0 16px 0 32px;
+}
+
+.profile-sidebar a {
+    display: block;
+    padding: 8.8px 12px;
+    border-left: 3px solid transparent;
+    color: #fff;
+    font-family: "Inter", system-ui, sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.profile-sidebar a:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.profile-sidebar a.is-active {
+    border-left-color: #fff;
+    background: #4a4340;
+}
+
+.profile-content {
+    flex: 1;
+    min-width: 0;
+    max-width: 880px;
+    padding: 32px 40px 48px;
+}
+
+/* ---------- Account header ---------- */
+
+.profile-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--grey-box) center / cover no-repeat;
+}
+
+.profile-avatar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6.4px;
+}
+
+.avatar-edit {
+    color: var(--maroon);
+    font-size: 12.8px;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#profile_photo:focus-visible + .avatar-edit {
+    outline: 3px solid var(--green);
+    outline-offset: 2px;
+}
+
+.profile-head__name {
+    flex: 1;
+    min-width: 180px;
+}
+
+.profile-head__name h1 {
+    margin: 0;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 32px;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+}
+
+.profile-head__name p {
+    margin: 6.4px 0 0;
+    font-size: 17.6px;
+}
+
+.profile-head__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 9.6px;
+    min-width: 130px;
+}
+
+.profile-head__actions .btn {
+    height: 40px;
+    border-radius: 8px;
+}
+
+/* ---------- Fields ---------- */
+
+.profile-field {
+    margin-bottom: 14.4px;
+    padding: 8.8px 14.4px 9.6px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+}
+
+.profile-field:focus-within {
+    outline: 3px solid var(--green);
+    outline-offset: 2px;
+}
+
+.profile-field label {
+    display: block;
+    font-size: 15.2px;
+}
+
+.profile-field input,
+.profile-field textarea,
+.profile-field select {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 15.2px;
+}
+
+.profile-field input:focus,
+.profile-field textarea:focus,
+.profile-field select:focus {
+    outline: none;
+}
+
+.profile-field textarea {
+    resize: vertical;
+}
+
+/* While editing, a thin outline shows which boxes can be changed */
+#profile-form.is-editing .profile-field {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25), inset 0 0 0 1px #b5ad9c;
+}
+
+.phone-row {
+    display: flex;
+    align-items: center;
+    gap: 9.6px;
+}
+
+.phone-row select {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 4.8px 6.4px;
+    border-radius: 6px;
+    background: #e6e3de;
+    cursor: pointer;
+}
+
+.phone-row select:disabled {
+    color: var(--text);
+    opacity: 1;
+}
+
+.password-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.eye-button {
+    flex: 0 0 auto;
+    padding: 3.2px;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.eye-button:focus-visible {
+    outline: 3px solid var(--green);
+    outline-offset: 2px;
+}
+
+.profile-save-bar {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* ---------- History / favorites lists ---------- */
+
+.list-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.list-head h1 {
+    margin: 0;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 32px;
+}
+
+.list-head .btn {
+    border-radius: 8px;
+}
+
+.list-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14.4px;
+    padding: 8.8px 16px 8.8px 9.6px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+}
+
+.list-card__thumb {
+    flex: 0 0 83px;
+    width: 83px;
+    height: 83px;
+    border-radius: 10px;
+    background: #6b6b6b center / cover no-repeat;
+}
+
+.list-card__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.list-card__title {
+    color: var(--text);
+    font-size: 16.8px;
+    text-decoration: none;
+}
+
+.list-card__title:hover {
+    text-decoration: underline;
+}
+
+.list-card__line {
+    margin-top: 2.4px;
+    font-size: 14.4px;
+}
+
+.list-card__line.small {
+    display: flex;
+    align-items: center;
+    gap: 4.8px;
+    font-size: 12.48px;
+}
+
+.icon-button {
+    padding: 6.4px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.icon-button:hover {
+    color: #c0524a;
+}
+
+.icon-button:focus-visible {
+    outline: 3px solid var(--green);
+    outline-offset: 2px;
+}
+
+.empty-note {
+    color: var(--muted);
+}
+
+@media (max-width: 800px) {
+    .profile-layout {
+        flex-direction: column;
+    }
+
+    .profile-sidebar {
+        flex-basis: auto;
+        position: static;
+        height: auto;
+        overflow-y: visible;
+        padding: 16px 0;
+    }
+
+    .profile-sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 0 16px;
+    }
+
+    .profile-sidebar h2 {
+        margin: 0 16px 12px;
+    }
+
+    .profile-content {
+        padding: 20px 16px 32px;
+    }
+
+    .profile-avatar-wrap {
+        width: 120px;
+        align-items: flex-start;
+    }
+
+    .profile-avatar-wrap .hint {
+        width: 150px;
+        text-align: left;
+    }
+
+    .profile-head__name {
+        flex-basis: 100%;
+    }
+
+    .profile-head__actions {
+        flex-direction: row;
+        width: 100%;
+    }
+}
+
+/* History: photos are landscape in the design */
+.list-card__thumb--wide {
+    flex-basis: 128px;
+    width: 128px;
+    height: 86px;
+}

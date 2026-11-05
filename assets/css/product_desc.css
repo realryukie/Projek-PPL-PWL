@@ -1,0 +1,263 @@
+/* Product Desc page (admin add / edit mode) */
+
+.product-page {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.product {
+    --grey-box: #efedf6;
+    padding-top: 28px;
+}
+
+/* Photo on the left, fields on the right */
+.product-top {
+    display: grid;
+    grid-template-columns: minmax(260px, 380px) 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+.photo-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: var(--grey-box) center / cover no-repeat;
+    color: var(--muted);
+    font-size: 14.4px;
+}
+
+.photo-box.has-image .photo-box__empty {
+    display: none;
+}
+
+.photo-button {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 16px;
+    border: 1px solid var(--maroon);
+    background: #fff;
+    color: var(--maroon);
+    font-size: 13.6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.photo-button:hover {
+    background: #f6ebe8;
+}
+
+#photo:focus-visible + .photo-button,
+.photo-button:focus-within {
+    outline: 3px solid var(--green);
+    outline-offset: 2px;
+}
+
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14.4px;
+}
+
+/* Map section */
+.product-section {
+    margin-top: 32px;
+}
+
+.product-section h2 {
+    margin: 0 0 14.4px;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 18.4px;
+}
+
+.map-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 1fr);
+    gap: clamp(16px, 2.4vw, 32px);
+    align-items: start;
+}
+
+.map-preview {
+    width: 100%;
+    height: 245px;
+    display: block;
+    border: 0;
+    border-radius: 8px;
+    background: var(--grey-box);
+}
+
+.map-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 245px;
+    border-radius: 8px;
+    background: var(--grey-box);
+    color: var(--muted);
+    font-size: 14.4px;
+    text-align: center;
+    padding: 16px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+@media (max-width: 800px) {
+    .product-page {
+        padding: 0 4px;
+    }
+
+    .product-top {
+        grid-template-columns: 1fr;
+    }
+
+    .map-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .map-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+}
+
+/* ---------- Pilihan Kamar (room cards) ---------- */
+
+.section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14.4px;
+}
+
+.section-head h2 {
+    margin: 0;
+}
+
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.room-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+.room-card__photo {
+    aspect-ratio: 16 / 9;
+    background: #666 center / cover no-repeat;
+}
+
+.room-card__body {
+    flex: 1;
+    padding: 12px 14.4px;
+}
+
+.room-card__name {
+    font-weight: 700;
+}
+
+.room-card__meta {
+    color: var(--muted);
+    font-size: 12.48px;
+}
+
+.room-card__price {
+    margin: 6.4px 0;
+    font-weight: 700;
+}
+
+.room-card__actions {
+    display: flex;
+    gap: 8px;
+    padding: 9.6px 14.4px;
+    border-top: 1px solid #eee;
+}
+
+.btn-small {
+    height: 30px;
+    padding: 0 12.8px;
+    font-size: 12.8px;
+}
+
+.btn-orange {
+    background: #dc8c2f;
+    color: #fff;
+}
+
+.btn-orange:hover {
+    background: #c47a22;
+}
+
+.btn-red {
+    background: #c0524a;
+    color: #fff;
+}
+
+.btn-red:hover {
+    background: #a8433c;
+}
+
+.badge {
+    display: inline-block;
+    padding: 2.4px 9.6px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-available {
+    background: #e4f0e6;
+    color: #2f5a3a;
+}
+
+.badge-occupied,
+.badge-full {
+    background: #f6e3e0;
+    color: #8f3a32;
+}
+
+/* ---------- Gallery management (admin) ---------- */
+
+.gallery-admin {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.gallery-admin__item {
+    padding: 6.4px;
+    border: 1px solid #ddd3c0;
+    background: #fff;
+}
+
+.gallery-admin__thumb {
+    display: block;
+    aspect-ratio: 4 / 3;
+    background: var(--grey-box) center / cover no-repeat;
+}
+
+.gallery-admin__check {
+    display: flex;
+    align-items: center;
+    gap: 6.4px;
+    margin-top: 6.4px;
+    font-size: 12.8px;
+    cursor: pointer;
+}
