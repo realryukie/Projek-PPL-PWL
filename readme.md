@@ -16,11 +16,11 @@ FOLDER STRUCTURE
 - auth/      register, login, logout
 - admin/     Admin panel, booking data, kost data, and room data.
 - assets/    css, js, image
-- uploads/   uploaded photo (kost + gallery in boarding_houses/, room di rooms/, profile di profiles/)
-- database/  file SQL
+- uploads/   uploaded photo (kost + gallery in boarding_houses/, room in rooms/, profile in profiles/)
+- database/  sql db file
 
 PAGES
 - index.php        Home
-- search.php       Search Kost
+- search.php       Search Kost (by filter)
 - product_desc.php Kost detail (visitor) and add/edit kost form (admin)
 - profile.php      Profile: account details, history, and favorite.
