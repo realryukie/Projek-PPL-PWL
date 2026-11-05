@@ -4,7 +4,7 @@
 // ------------------------------------------------------------
 // If you open the site at http://localhost/kostku  -> '/kostku'
 // If you open the site at http://kostku.test       -> ''
-define('BASE_URL', '/kostku');
+define('BASE_URL', '/PROJEK_PPL_PWL');
 
 // ------------------------------------------------------------
 // Database settings (Laragon defaults)
