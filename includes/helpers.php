@@ -13,6 +13,12 @@ function statusLabel(string $status): string
     $labels = [
         'available' => 'Tersedia',
         'full'      => 'Penuh',
+        'occupied'  => 'Terisi',
+        'pending'   => 'Menunggu konfirmasi',
+        'confirmed' => 'Dikonfirmasi',
+        'rejected'  => 'Ditolak',
+        'cancelled' => 'Dibatalkan',
+        'completed' => 'Selesai',
     ];
     return $labels[$status] ?? $status;
 }
@@ -169,15 +175,17 @@ function syncHouseMinPrice(PDO $conn, int $houseId): void
         [$houseId]
     );
 
-    if ($row === null || $row['min_price'] === null) {
+    if ($row === null) {
         return;
     }
+
+    $minPrice = $row['min_price'] === null ? 0 : (int) $row['min_price'];
 
     executePrepared(
         $conn,
         'UPDATE boarding_houses SET price_per_month = ? WHERE id = ?',
         'ii',
-        [(int) $row['min_price'], $houseId]
+        [$minPrice, $houseId]
     );
 }
 

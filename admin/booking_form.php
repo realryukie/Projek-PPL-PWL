@@ -119,18 +119,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $saved = executeBookingWithRoomLock($conn, $roomId, function (array $lockedRoom) use (
                 $conn, $roomId, $form, $contact, $price, $totalPrice, $mode, $id, &$errors
             ): bool {
-                if (
-                    in_array($form['status'], ['pending', 'confirmed'], true)
-                    && !isRoomAvailable(
+                if (in_array($form['status'], ['pending', 'confirmed'], true)) {
+                    if ($lockedRoom['status'] !== 'available' || $lockedRoom['house_status'] !== 'available') {
+                        $errors[] = 'Booking aktif hanya bisa dibuat untuk kost dan kamar yang tersedia.';
+                        return false;
+                    }
+
+                    if (!isRoomAvailable(
                         $conn,
                         $roomId,
                         $form['check_in_date'],
                         $form['check_out_date'],
                         $mode === 'edit' ? $id : 0
-                    )
-                ) {
-                    $errors[] = 'Kamar ini sudah dipesan pada tanggal tersebut (booking lain yang masih aktif).';
-                    return false;
+                    )) {
+                        $errors[] = 'Kamar ini sudah dipesan pada tanggal tersebut (booking lain yang masih aktif).';
+                        return false;
+                    }
                 }
 
                 if ($mode === 'add') {

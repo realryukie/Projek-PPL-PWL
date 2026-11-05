@@ -2,9 +2,31 @@
 // ------------------------------------------------------------
 // App settings
 // ------------------------------------------------------------
-// If you open the site at http://localhost/kostku  -> '/kostku'
-// If you open the site at http://kostku.test       -> ''
-define('BASE_URL', '/PROJEK_PPL_PWL');
+// Derive the URL prefix from the project location under the web server root.
+$projectRoot = realpath(dirname(__DIR__));
+$documentRoot = isset($_SERVER['DOCUMENT_ROOT']) ? realpath($_SERVER['DOCUMENT_ROOT']) : false;
+$baseUrl = '/kostku';
+
+if ($projectRoot !== false && $documentRoot !== false) {
+    $projectPath = rtrim(str_replace('\\', '/', $projectRoot), '/');
+    $documentPath = rtrim(str_replace('\\', '/', $documentRoot), '/');
+    $windowsPaths = DIRECTORY_SEPARATOR === '\\';
+    $samePath = $windowsPaths
+        ? strcasecmp($projectPath, $documentPath) === 0
+        : $projectPath === $documentPath;
+    $documentPrefix = $documentPath . '/';
+    $insideDocumentRoot = $windowsPaths
+        ? strncasecmp($projectPath, $documentPrefix, strlen($documentPrefix)) === 0
+        : strncmp($projectPath, $documentPrefix, strlen($documentPrefix)) === 0;
+
+    if ($samePath) {
+        $baseUrl = '';
+    } elseif ($insideDocumentRoot) {
+        $baseUrl = '/' . substr($projectPath, strlen($documentPrefix));
+    }
+}
+
+define('BASE_URL', $baseUrl);
 
 // ------------------------------------------------------------
 // Database settings (Laragon defaults)
