@@ -87,6 +87,25 @@
     scroll-margin-top: 16px;
 }
 
+.home-page.reveal-ready .scroll-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 600ms ease, transform 600ms ease;
+}
+
+.home-page.reveal-ready .scroll-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.info-card.scroll-reveal:nth-child(2) {
+    transition-delay: 120ms;
+}
+
+.info-card.scroll-reveal:nth-child(3) {
+    transition-delay: 240ms;
+}
+
 .home-top .home-section {
     margin-bottom: 28px;
 }
@@ -296,6 +315,12 @@
 
 @media (prefers-reduced-motion: reduce) {
     .hero__slide {
+        transition: none;
+    }
+
+    .home-page.reveal-ready .scroll-reveal {
+        opacity: 1;
+        transform: none;
         transition: none;
     }
 }

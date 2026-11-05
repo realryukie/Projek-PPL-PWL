@@ -38,7 +38,7 @@ $recommended = resolveHouseCardPhotos($conn, $recommended);
 
 $pageTitle = 'Kostku - Cari dan Pesan Kos';
 $extraCss  = ['home.css'];
-$extraJs   = ['carousel.js'];
+$extraJs   = ['carousel.js', 'home-scroll.js'];
 require __DIR__ . '/includes/header.php';
 ?>
     <main class="home-page">
@@ -90,7 +90,7 @@ require __DIR__ . '/includes/header.php';
 
         <section class="home-dark">
             <div class="container home home-dark__inner">
-                <section class="home-section" id="about">
+                <section class="home-section scroll-reveal" id="about">
                     <h2 class="section-title">Tentang Kami</h2>
                     <p class="section-text">
                         KOSTKU adalah platform pencarian dan pemesanan kos terpercaya yang menghubungkan pencari hunian
@@ -98,19 +98,19 @@ require __DIR__ . '/includes/header.php';
                     </p>
                 </section>
 
-                <section class="home-section" id="terms">
+                <section class="home-section scroll-reveal" id="terms">
                     <h2 class="section-title">Syarat dan Ketentuan</h2>
                     <div class="info-cards">
-                        <div class="info-card">Penyewa wajib mengisi data diri dengan benar pada form Booking.</div>
-                        <div class="info-card">Konfirmasi dan persetujuan sewa sepenuhnya dikelola oleh admin / pemilik kos.</div>
-                        <div class="info-card">Pembayaran dilakukan langsung melalui kontak WhatsApp resmi yang tertera.</div>
+                        <div class="info-card scroll-reveal">Penyewa wajib mengisi data diri dengan benar pada form Booking.</div>
+                        <div class="info-card scroll-reveal">Konfirmasi dan persetujuan sewa sepenuhnya dikelola oleh admin / pemilik kos.</div>
+                        <div class="info-card scroll-reveal">Pembayaran dilakukan langsung melalui kontak WhatsApp resmi yang tertera.</div>
                     </div>
                 </section>
             </div>
         </section>
 
         <div class="container home home-bottom">
-            <section class="home-section home-privacy" id="privacy">
+            <section class="home-section home-privacy scroll-reveal" id="privacy">
                 <?php
                 $privacyPhotoLeft = BASE_URL . '/assets/img/login-side.jpg';
                 $privacyPhotoRight = BASE_URL . '/assets/img/register-side.jpg';
@@ -129,12 +129,12 @@ require __DIR__ . '/includes/header.php';
                      src="<?= e($privacyPhotoRight) ?>" alt="Hunian yang tersedia di Kostku" loading="lazy">
             </section>
 
-            <section class="home-section" id="contract">
+            <section class="home-section scroll-reveal" id="contract">
                 <h2 class="section-title">Kontrak</h2>
                 <div class="info-cards">
-                    <div class="info-card">Setiap transaksi dan kesepakatan sewa kamar di KOSTKU diatur melalui perjanjian kontrak tertulis atau digital antara penyewa dan pemilik kos.</div>
-                    <div class="info-card">Masa berlaku kontrak sewa dihitung berdasarkan tanggal masuk (check-in) yang disetujui dalam sistem.</div>
-                    <div class="info-card">Segala bentuk perubahan ketentuan sewa, perpanjangan waktu, atau pembatalan wajib dikonfirmasikan kepada admin paling lambat 3 hari sebelum jatuh tempo.</div>
+                    <div class="info-card scroll-reveal">Setiap transaksi dan kesepakatan sewa kamar di KOSTKU diatur melalui perjanjian kontrak tertulis atau digital antara penyewa dan pemilik kos.</div>
+                    <div class="info-card scroll-reveal">Masa berlaku kontrak sewa dihitung berdasarkan tanggal masuk (check-in) yang disetujui dalam sistem.</div>
+                    <div class="info-card scroll-reveal">Segala bentuk perubahan ketentuan sewa, perpanjangan waktu, atau pembatalan wajib dikonfirmasikan kepada admin paling lambat 3 hari sebelum jatuh tempo.</div>
                 </div>
             </section>
         </div>
