@@ -267,6 +267,9 @@ if ($house['latitude'] !== null && $house['longitude'] !== null) {
 $pageTitle = $house['name'] . ' - Kostku';
 $extraCss  = ['product_desc.css', 'product_view.css'];
 $extraJs   = ['product_view.js'];
+$flashSuccess = getFlash('success');
+$flashError   = getFlash('error');
+require __DIR__ . '/page_head.php';
 require __DIR__ . '/header.php';
 ?>
     <main class="container product">
@@ -498,4 +501,7 @@ require __DIR__ . '/header.php';
             <?php endif; ?>
         </section>
     </main>
-<?php require __DIR__ . '/footer.php'; ?>
+<?php
+require __DIR__ . '/footer.php';
+require __DIR__ . '/page_end.php';
+?>

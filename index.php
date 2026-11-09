@@ -39,6 +39,9 @@ $recommended = resolveHouseCardPhotos($conn, $recommended);
 $pageTitle = 'Kostku - Cari dan Pesan Kos';
 $extraCss  = ['home.css'];
 $extraJs   = ['carousel.js', 'home-scroll.js'];
+$flashSuccess = getFlash('success');
+$flashError   = getFlash('error');
+require __DIR__ . '/includes/page_head.php';
 require __DIR__ . '/includes/header.php';
 ?>
     <main class="home-page">
@@ -139,4 +142,7 @@ require __DIR__ . '/includes/header.php';
             </section>
         </div>
     </main>
-<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php
+require __DIR__ . '/includes/footer.php';
+require __DIR__ . '/includes/page_end.php';
+?>

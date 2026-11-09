@@ -207,7 +207,9 @@ $trashIcon = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke
 $pageTitle  = 'Profil - Kostku';
 $extraCss   = ['profile.css'];
 $extraJs    = ['profile.js'];
-$hideFooter = true;
+$flashSuccess = getFlash('success');
+$flashError   = getFlash('error');
+require __DIR__ . '/includes/page_head.php';
 require __DIR__ . '/includes/header.php';
 ?>
     <div class="profile-layout">
@@ -395,4 +397,6 @@ require __DIR__ . '/includes/header.php';
             <?php endif; ?>
         </main>
     </div>
-<?php require __DIR__ . '/includes/footer.php'; ?>
+    <?php
+    require __DIR__ . '/includes/page_end.php';
+    ?>

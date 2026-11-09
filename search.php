@@ -129,6 +129,9 @@ $searchBar = [
     'max_price' => $maxPrice !== null ? (string) $maxPrice : '',
     'sort'      => $sort,
 ];
+$flashSuccess = getFlash('success');
+$flashError   = getFlash('error');
+require __DIR__ . '/includes/page_head.php';
 require __DIR__ . '/includes/header.php';
 ?>
     <main class="container search-results">
@@ -179,5 +182,7 @@ require __DIR__ . '/includes/header.php';
             <?php endif; ?>
         <?php endif; ?>
     </main>
-<?php require __DIR__ . '/includes/footer.php'; ?>
-                        
+<?php
+require __DIR__ . '/includes/footer.php';
+require __DIR__ . '/includes/page_end.php';
+?>
