@@ -38,97 +38,133 @@ if ($search !== '') {
 
 $pageTitle  = 'Data Booking';
 $activeMenu = 'bookings';
-require __DIR__ . '/../includes/admin_header.php';
+$extraCss = $extraCss ?? [];
+$extraJs = $extraJs ?? [];
+$adminCssPath = __DIR__ . '/../assets/css/admin.css';
+$flashSuccess = getFlash('success');
+$flashError = getFlash('error');
 ?>
-            <h1>Tabel Pengelolaan Data Booking</h1>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= e($pageTitle) ?> - Kostku</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css?v=<?= (int) filemtime($adminCssPath) ?>">
+    <?php foreach ($extraCss as $cssFile): ?>
+        <?php $cssPath = __DIR__ . '/../assets/css/' . $cssFile; ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/<?= e($cssFile) ?>?v=<?= (int) filemtime($cssPath) ?>">
+    <?php endforeach; ?>
+</head>
+<body>
+<?php require __DIR__ . '/../includes/admin_header.php'; ?>
+<div class="admin-shell">
+    <?php require __DIR__ . '/../includes/admin_sidebar.php'; ?>
+    <main class="admin-content">
+        <?php if ($flashSuccess): ?>
+            <div class="alert alert-success" role="status"><?= e($flashSuccess) ?></div>
+        <?php endif; ?>
+        <?php if ($flashError): ?>
+            <div class="alert alert-error" role="alert"><?= e($flashError) ?></div>
+        <?php endif; ?>
+        <h1>Tabel Pengelolaan Data Booking</h1>
 
-            <div class="toolbar">
-                <form method="get" action="">
-                    <input type="search" name="q" placeholder="Cari Booking" value="<?= e($search) ?>" aria-label="Cari booking">
-                    <button type="submit" class="btn btn-outline">Cari</button>
-                </form>
-                <a class="btn btn-green" href="<?= BASE_URL ?>/admin/booking_form.php?mode=add">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 8v8M8 12h8"></path>
-                    </svg>
-                    Add
-                </a>
-            </div>
+        <div class="toolbar">
+            <form method="get" action="">
+                <input type="search" name="q" placeholder="Cari Booking" value="<?= e($search) ?>" aria-label="Cari booking">
+                <button type="submit" class="btn btn-outline">Cari</button>
+            </form>
+            <a class="btn btn-green" href="<?= BASE_URL ?>/admin/booking_form.php?mode=add">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 8v8M8 12h8"></path>
+                </svg>
+                Add
+            </a>
+        </div>
 
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Nama Pemesan</th>
+                        <th>Nama Kost</th>
+                        <th>Kontak</th>
+                        <th>Tanggal Masuk</th>
+                        <th>Tanggal Keluar</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($bookings)): ?>
                         <tr>
-                            <th>Nama Pemesan</th>
-                            <th>Nama Kost</th>
-                            <th>Kontak</th>
-                            <th>Tanggal Masuk</th>
-                            <th>Tanggal Keluar</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <td colspan="8" class="empty-row">
+                                <?php if ($search !== ''): ?>
+                                    Tidak ada booking yang cocok dengan "<?= e($search) ?>".
+                                <?php else: ?>
+                                    Belum ada data booking.
+                                <?php endif; ?>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($bookings)): ?>
-                            <tr>
-                                <td colspan="8" class="empty-row">
-                                    <?php if ($search !== ''): ?>
-                                        Tidak ada booking yang cocok dengan "<?= e($search) ?>".
+                    <?php endif; ?>
+
+                    <?php foreach ($bookings as $booking): ?>
+                        <tr>
+                            <td>
+                                <div class="cell-name booking-person">
+                                    <?php if (uploadFileExists('profiles', $booking['profile_photo'])): ?>
+                                        <img class="booking-person__photo"
+                                             src="<?= e(uploadUrl('profiles', $booking['profile_photo'])) ?>"
+                                             alt="" aria-hidden="true">
                                     <?php else: ?>
-                                        Belum ada data booking.
+                                        <span class="booking-person__photo booking-person__photo--empty" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"></path>
+                                            </svg>
+                                        </span>
                                     <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
+                                    <span><?= e($booking['booker_name']) ?></span>
+                                </div>
+                            </td>
+                            <td>
+                                <?= e($booking['boarding_house_name']) ?><br>
+                                <small><?= e($booking['room_name']) ?></small>
+                            </td>
+                            <td><?= e($booking['contact']) ?></td>
+                            <td><?= e(formatDate($booking['check_in_date'])) ?></td>
+                            <td><?= e(formatDate($booking['check_out_date'])) ?></td>
+                            <td><?= e(formatRupiah($booking['total_price'])) ?></td>
+                            <td>
+                                <span class="badge badge-<?= e($booking['status']) ?>"><?= e(statusLabel($booking['status'])) ?></span>
+                            </td>
+                            <td>
+                                <div class="row-actions">
+                                    <a class="btn btn-small btn-orange"
+                                       href="<?= BASE_URL ?>/admin/booking_form.php?mode=edit&amp;id=<?= (int) $booking['id'] ?>">Edit</a>
 
-                        <?php foreach ($bookings as $booking): ?>
-                            <tr>
-                                <td>
-                                    <div class="cell-name booking-person">
-                                        <?php if (uploadFileExists('profiles', $booking['profile_photo'])): ?>
-                                            <img class="booking-person__photo"
-                                                 src="<?= e(uploadUrl('profiles', $booking['profile_photo'])) ?>"
-                                                 alt="" aria-hidden="true">
-                                        <?php else: ?>
-                                            <span class="booking-person__photo booking-person__photo--empty" aria-hidden="true">
-                                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"></path>
-                                                </svg>
-                                            </span>
-                                        <?php endif; ?>
-                                        <span><?= e($booking['booker_name']) ?></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <?= e($booking['boarding_house_name']) ?><br>
-                                    <small><?= e($booking['room_name']) ?></small>
-                                </td>
-                                <td><?= e($booking['contact']) ?></td>
-                                <td><?= e(formatDate($booking['check_in_date'])) ?></td>
-                                <td><?= e(formatDate($booking['check_out_date'])) ?></td>
-                                <td><?= e(formatRupiah($booking['total_price'])) ?></td>
-                                <td>
-                                    <span class="badge badge-<?= e($booking['status']) ?>"><?= e(statusLabel($booking['status'])) ?></span>
-                                </td>
-                                <td>
-                                    <div class="row-actions">
-                                        <a class="btn btn-small btn-orange"
-                                           href="<?= BASE_URL ?>/admin/booking_form.php?mode=edit&amp;id=<?= (int) $booking['id'] ?>">Edit</a>
-
-                                        <form method="post" action=""
-                                              onsubmit="return confirm('Hapus booking dari &quot;<?= e(addslashes($booking['booker_name'])) ?>&quot;?');">
-                                            <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-                                            <input type="hidden" name="action" value="delete">
-                                            <input type="hidden" name="id" value="<?= (int) $booking['id'] ?>">
-                                            <button type="submit" class="btn btn-small btn-red">Delete</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-<?php require __DIR__ . '/../includes/admin_footer.php'; ?>
+                                    <form method="post" action=""
+                                          onsubmit="return confirm('Hapus booking dari &quot;<?= e(addslashes($booking['booker_name'])) ?>&quot;?');">
+                                        <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="<?= (int) $booking['id'] ?>">
+                                        <button type="submit" class="btn btn-small btn-red">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+<?php foreach ($extraJs as $jsFile): ?>
+    <script src="<?= BASE_URL ?>/assets/js/<?= e($jsFile) ?>" defer></script>
+<?php endforeach; ?>
+</body>
+</html>

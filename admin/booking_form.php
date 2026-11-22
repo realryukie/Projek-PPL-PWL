@@ -172,90 +172,127 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $pageTitle  = $mode === 'add' ? 'Tambah Booking' : 'Edit Booking';
 $activeMenu = 'bookings';
-require __DIR__ . '/../includes/admin_header.php';
+$extraCss = $extraCss ?? [];
+$extraJs = $extraJs ?? [];
+$adminCssPath = __DIR__ . '/../assets/css/admin.css';
+$flashSuccess = getFlash('success');
+$flashError = getFlash('error');
 ?>
-            <h1><?= $mode === 'add' ? 'Tambah Booking' : 'Edit Booking' ?></h1>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= e($pageTitle) ?> - Kostku</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css?v=<?= (int) filemtime($adminCssPath) ?>">
+    <?php foreach ($extraCss as $cssFile): ?>
+        <?php $cssPath = __DIR__ . '/../assets/css/' . $cssFile; ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/<?= e($cssFile) ?>?v=<?= (int) filemtime($cssPath) ?>">
+    <?php endforeach; ?>
+</head>
+<body>
+<?php require __DIR__ . '/../includes/admin_header.php'; ?>
+<div class="admin-shell">
+    <?php require __DIR__ . '/../includes/admin_sidebar.php'; ?>
+    <main class="admin-content">
+        <?php if ($flashSuccess): ?>
+            <div class="alert alert-success" role="status"><?= e($flashSuccess) ?></div>
+        <?php endif; ?>
+        <?php if ($flashError): ?>
+            <div class="alert alert-error" role="alert"><?= e($flashError) ?></div>
+        <?php endif; ?>
 
-            <?php if (!empty($errors)): ?>
-                <div class="alert alert-error" role="alert">
-                    <?php foreach ($errors as $error): ?>
-                        <p><?= e($error) ?></p>
-                    <?php endforeach; ?>
+        <h1><?= $mode === 'add' ? 'Tambah Booking' : 'Edit Booking' ?></h1>
+
+        <?php if (!empty($errors)): ?>
+            <div class="alert alert-error" role="alert">
+                <?php foreach ($errors as $error): ?>
+                    <p><?= e($error) ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (empty($rooms)): ?>
+            <div class="alert alert-error" role="alert">
+                Belum ada data kamar. Tambahkan kamar dulu sebelum membuat booking.
+                <a href="<?= BASE_URL ?>/admin/room_form.php?mode=add">Tambah kamar</a>
+            </div>
+        <?php else: ?>
+        <div class="form-card">
+            <form method="post" action="" novalidate>
+                <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+
+                <div class="field">
+                    <label for="room_id">Kamar</label>
+                    <select id="room_id" name="room_id" required>
+                        <option value="">Pilih kamar</option>
+                        <?php foreach ($rooms as $room): ?>
+                            <option value="<?= (int) $room['id'] ?>"<?= (int) $form['room_id'] === (int) $room['id'] ? ' selected' : '' ?>>
+                                <?= e($room['house_name']) ?> - <?= e($room['name']) ?> (<?= e(formatRupiah($room['price_per_month'])) ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
-            <?php endif; ?>
 
-            <?php if (empty($rooms)): ?>
-                <div class="alert alert-error" role="alert">
-                    Belum ada data kamar. Tambahkan kamar dulu sebelum membuat booking.
-                    <a href="<?= BASE_URL ?>/admin/room_form.php?mode=add">Tambah kamar</a>
-                </div>
-            <?php else: ?>
-            <div class="form-card">
-                <form method="post" action="" novalidate>
-                    <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-
+                <div class="field-row">
                     <div class="field">
-                        <label for="room_id">Kamar</label>
-                        <select id="room_id" name="room_id" required>
-                            <option value="">Pilih kamar</option>
-                            <?php foreach ($rooms as $room): ?>
-                                <option value="<?= (int) $room['id'] ?>"<?= (int) $form['room_id'] === (int) $room['id'] ? ' selected' : '' ?>>
-                                    <?= e($room['house_name']) ?> - <?= e($room['name']) ?> (<?= e(formatRupiah($room['price_per_month'])) ?>)
+                        <label for="booker_name">Nama pemesan</label>
+                        <input type="text" id="booker_name" name="booker_name" maxlength="100"
+                               value="<?= e($form['booker_name']) ?>" required>
+                    </div>
+                    <div class="field">
+                        <label for="contact">Kontak (WhatsApp)</label>
+                        <input type="tel" id="contact" name="contact" maxlength="20"
+                               value="<?= e($form['contact']) ?>" placeholder="08123456789" required>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="check_in_date">Tanggal masuk</label>
+                        <input type="date" id="check_in_date" name="check_in_date"
+                               value="<?= e($form['check_in_date']) ?>" required>
+                    </div>
+                    <div class="field">
+                        <label for="check_out_date">Tanggal keluar</label>
+                        <input type="date" id="check_out_date" name="check_out_date"
+                               value="<?= e($form['check_out_date']) ?>" required>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="price_at_booking">Harga / bulan (Rp)</label>
+                        <input type="number" id="price_at_booking" name="price_at_booking" min="0" step="1"
+                               value="<?= e($form['price_at_booking']) ?>">
+                        <p class="hint">Kosongkan untuk memakai harga kamar yang dipilih. Total harga dihitung otomatis (harga x jumlah bulan).</p>
+                    </div>
+                    <div class="field">
+                        <label for="status">Status</label>
+                        <select id="status" name="status">
+                            <?php foreach ($statuses as $statusOption): ?>
+                                <option value="<?= e($statusOption) ?>"<?= $form['status'] === $statusOption ? ' selected' : '' ?>>
+                                    <?= e(statusLabel($statusOption)) ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
+                </div>
 
-                    <div class="field-row">
-                        <div class="field">
-                            <label for="booker_name">Nama pemesan</label>
-                            <input type="text" id="booker_name" name="booker_name" maxlength="100"
-                                   value="<?= e($form['booker_name']) ?>" required>
-                        </div>
-                        <div class="field">
-                            <label for="contact">Kontak (WhatsApp)</label>
-                            <input type="tel" id="contact" name="contact" maxlength="20"
-                                   value="<?= e($form['contact']) ?>" placeholder="08123456789" required>
-                        </div>
-                    </div>
-
-                    <div class="field-row">
-                        <div class="field">
-                            <label for="check_in_date">Tanggal masuk</label>
-                            <input type="date" id="check_in_date" name="check_in_date"
-                                   value="<?= e($form['check_in_date']) ?>" required>
-                        </div>
-                        <div class="field">
-                            <label for="check_out_date">Tanggal keluar</label>
-                            <input type="date" id="check_out_date" name="check_out_date"
-                                   value="<?= e($form['check_out_date']) ?>" required>
-                        </div>
-                    </div>
-
-                    <div class="field-row">
-                        <div class="field">
-                            <label for="price_at_booking">Harga / bulan (Rp)</label>
-                            <input type="number" id="price_at_booking" name="price_at_booking" min="0" step="1"
-                                   value="<?= e($form['price_at_booking']) ?>">
-                            <p class="hint">Kosongkan untuk memakai harga kamar yang dipilih. Total harga dihitung otomatis (harga x jumlah bulan).</p>
-                        </div>
-                        <div class="field">
-                            <label for="status">Status</label>
-                            <select id="status" name="status">
-                                <?php foreach ($statuses as $statusOption): ?>
-                                    <option value="<?= e($statusOption) ?>"<?= $form['status'] === $statusOption ? ' selected' : '' ?>>
-                                        <?= e(statusLabel($statusOption)) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-green">Simpan</button>
-                        <a class="btn btn-outline" href="<?= BASE_URL ?>/admin/bookings.php">Batal</a>
-                    </div>
-                </form>
-            </div>
-            <?php endif; ?>
-<?php require __DIR__ . '/../includes/admin_footer.php'; ?>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-green">Simpan</button>
+                    <a class="btn btn-outline" href="<?= BASE_URL ?>/admin/bookings.php">Batal</a>
+                </div>
+            </form>
+        </div>
+        <?php endif; ?>
+    </main>
+</div>
+<?php foreach ($extraJs as $jsFile): ?>
+    <script src="<?= BASE_URL ?>/assets/js/<?= e($jsFile) ?>" defer></script>
+<?php endforeach; ?>
+</body>
+</html>

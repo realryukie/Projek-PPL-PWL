@@ -249,220 +249,254 @@ $pageTitle = ($mode === 'add' ? 'Tambah Kost' : 'Edit Kost') . ' - Kostku';
 $activeMenu = 'boarding_houses';
 $extraCss  = ['product_desc.css'];
 $extraJs   = ['product_desc.js'];
-require __DIR__ . '/includes/admin_header.php';
+$adminCssPath = __DIR__ . '/assets/css/admin.css';
+$flashSuccess = getFlash('success');
+$flashError = getFlash('error');
 ?>
-    <div class="product-page">
-    <h1><?= $mode === 'add' ? 'Tambah Kost' : 'Edit Kost' ?></h1>
-
-    <div class="product">
-        <?php if (!empty($errors)): ?>
-            <div class="alert alert-error" role="alert">
-                <?php foreach ($errors as $error): ?>
-                    <p><?= e($error) ?></p>
-                <?php endforeach; ?>
-            </div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= e($pageTitle) ?> - Kostku</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css?v=<?= (int) filemtime($adminCssPath) ?>">
+    <?php foreach ($extraCss as $cssFile): ?>
+        <?php $cssPath = __DIR__ . '/assets/css/' . $cssFile; ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/<?= e($cssFile) ?>?v=<?= (int) filemtime($cssPath) ?>">
+    <?php endforeach; ?>
+</head>
+<body>
+<?php require __DIR__ . '/includes/admin_header.php'; ?>
+<div class="admin-shell">
+    <?php require __DIR__ . '/includes/admin_sidebar.php'; ?>
+    <main class="admin-content">
+        <?php if ($flashSuccess): ?>
+            <div class="alert alert-success" role="status"><?= e($flashSuccess) ?></div>
         <?php endif; ?>
+        <?php if ($flashError): ?>
+            <div class="alert alert-error" role="alert"><?= e($flashError) ?></div>
+        <?php endif; ?>
+        <div class="product-page">
+            <h1><?= $mode === 'add' ? 'Tambah Kost' : 'Edit Kost' ?></h1>
 
-        <form method="post" action="" enctype="multipart/form-data" novalidate>
-            <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-
-            <section class="product-top">
-                <div>
-                    <div id="photo-preview"
-                         class="photo-box<?= $photoUrl ? ' has-image' : '' ?>"
-                         <?= $photoUrl ? 'style="background-image:url(\'' . e($photoUrl) . '\')"' : '' ?>>
-                        <span class="photo-box__empty">Belum ada foto</span>
-                    </div>
-
-                    <input class="visually-hidden" type="file" id="photo" name="photo"
-                           accept="image/jpeg,image/png,image/webp">
-                    <label class="photo-button" for="photo">
-                        <?= $photoUrl ? 'Ganti foto' : 'Pilih foto' ?>
-                    </label>
-                    <p class="hint">JPG, PNG, atau WebP. Maksimal 5 MB.</p>
-                </div>
-
-                <div>
-                    <div class="field">
-                        <label for="name">Nama kost</label>
-                        <input type="text" id="name" name="name" maxlength="150"
-                               value="<?= e($form['name']) ?>" required>
-                    </div>
-
-                    <div class="field">
-                        <label for="address">Alamat</label>
-                        <input type="text" id="address" name="address" maxlength="255"
-                               value="<?= e($form['address']) ?>" required>
-                    </div>
-
-                    <div class="field-row">
-                        <div class="field">
-                            <label for="city">Kota / Daerah</label>
-                            <input type="text" id="city" name="city" maxlength="100"
-                                   value="<?= e($form['city']) ?>" required>
-                        </div>
-                        <div class="field">
-                            <label for="type">Tipe hunian</label>
-                            <select id="type" name="type" required>
-                                <option value="">Pilih tipe</option>
-                                <?php foreach (['male', 'female', 'mixed', 'house'] as $typeOption): ?>
-                                    <option value="<?= e($typeOption) ?>"<?= $form['type'] === $typeOption ? ' selected' : '' ?>>
-                                        <?= e(typeLabel($typeOption)) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label for="description">Deskripsi</label>
-                        <textarea id="description" name="description"><?= e($form['description']) ?></textarea>
-                    </div>
-
-                    <div class="field-row">
-                        <div class="field">
-                            <label for="price_per_month">Harga / bulan (Rp)</label>
-                            <input type="number" id="price_per_month" name="price_per_month" min="0" step="1"
-                                   value="<?= e($form['price_per_month']) ?>" required>
-                            <p class="hint">Isi dengan harga mulai dari (kamar termurah).</p>
-                        </div>
-                        <div class="field">
-                            <label for="status">Status</label>
-                            <select id="status" name="status">
-                                <?php foreach (['available', 'full'] as $statusOption): ?>
-                                    <option value="<?= e($statusOption) ?>"<?= $form['status'] === $statusOption ? ' selected' : '' ?>>
-                                        <?= e(statusLabel($statusOption)) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="field-row">
-                        <div class="field">
-                            <label for="total_rooms">Jumlah kamar</label>
-                            <input type="number" id="total_rooms" name="total_rooms" min="1" max="1000" step="1"
-                                   value="<?= e($form['total_rooms']) ?>" required>
-                            <p class="hint">Total kamar di kost ini. Beda dengan tipe kamar.</p>
-                        </div>
-                        <div class="field">
-                            <label for="contact">Kontak (WhatsApp)</label>
-                            <input type="tel" id="contact" name="contact" maxlength="20"
-                                   value="<?= e($form['contact']) ?>" placeholder="08123456789" required>
-                            <p class="hint">Nomor 08... otomatis disimpan sebagai 628...</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="product-section">
-                <h2>Galeri Foto</h2>
-                <p class="hint">Foto tambahan untuk slider di halaman detail (maksimal <?= MAX_GALLERY_IMAGES ?> foto, masing-masing 5 MB). Foto utama di atas dipakai sebagai gambar sampul.</p>
-
-                <?php if (!empty($galleryImages)): ?>
-                    <div class="gallery-admin">
-                        <?php foreach ($galleryImages as $image): ?>
-                            <?php $imageUrl = uploadFileExists('boarding_houses', $image['image']) ? uploadUrl('boarding_houses', $image['image']) : null; ?>
-                            <div class="gallery-admin__item">
-                                <span class="gallery-admin__thumb"<?= $imageUrl ? ' style="background-image:url(\'' . e($imageUrl) . '\')"' : '' ?>></span>
-                                <label class="gallery-admin__check">
-                                    <input type="checkbox" name="delete_images[]" value="<?= (int) $image['id'] ?>"> Hapus
-                                </label>
-                            </div>
+            <div class="product">
+                <?php if (!empty($errors)): ?>
+                    <div class="alert alert-error" role="alert">
+                        <?php foreach ($errors as $error): ?>
+                            <p><?= e($error) ?></p>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
 
-                <div class="field">
-                    <label for="gallery">Tambah foto galeri</label>
-                    <input type="file" id="gallery" name="gallery[]" multiple accept="image/jpeg,image/png,image/webp">
-                </div>
-            </section>
+                <form method="post" action="" enctype="multipart/form-data" novalidate>
+                    <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
 
-            <section class="product-section">
-                <div class="section-head">
-                    <h2>Pilihan Kamar</h2>
-                    <?php if ($mode === 'edit'): ?>
-                        <a class="btn btn-green btn-small"
-                           href="<?= BASE_URL ?>/admin/room_form.php?mode=add&amp;house_id=<?= (int) $id ?>&amp;from=house">Tambah Kamar</a>
-                    <?php endif; ?>
-                </div>
-
-                <?php if ($mode === 'add'): ?>
-                    <p class="hint">Simpan data kost dulu, lalu pilihan kamar bisa ditambahkan di bagian ini.</p>
-                <?php elseif (empty($rooms)): ?>
-                    <p class="hint">Belum ada pilihan kamar. Klik Tambah Kamar untuk membuat yang pertama.</p>
-                <?php else: ?>
-                    <div class="room-grid">
-                        <?php foreach ($rooms as $room): ?>
-                            <?php $roomPhotoUrl = uploadUrl('rooms', $room['photo']); ?>
-                            <article class="room-card">
-                                <div class="room-card__photo"<?= $roomPhotoUrl ? ' style="background-image:url(\'' . e($roomPhotoUrl) . '\')"' : '' ?>></div>
-                                <div class="room-card__body">
-                                    <div class="room-card__name"><?= e($room['name']) ?></div>
-                                    <div class="room-card__meta"><?= e($room['room_type']) ?></div>
-                                    <?php if (!empty($room['description'])): ?>
-                                        <div class="room-card__meta">Desc: <?= e($room['description']) ?></div>
-                                    <?php endif; ?>
-                                    <div class="room-card__price"><?= e(formatRupiah($room['price_per_month'])) ?></div>
-                                    <span class="badge badge-<?= e($room['status']) ?>"><?= e(statusLabel($room['status'])) ?></span>
-                                </div>
-                                <div class="room-card__actions">
-                                    <a class="btn btn-small btn-orange"
-                                       href="<?= BASE_URL ?>/admin/room_form.php?mode=edit&amp;id=<?= (int) $room['id'] ?>&amp;from=house">Edit</a>
-                                    <button type="submit" form="delete-room-<?= (int) $room['id'] ?>"
-                                            class="btn btn-small btn-red">Hapus</button>
-                                </div>
-                            </article>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </section>
-
-            <section class="product-section">
-                <h2>Lokasi di peta</h2>
-                <div class="map-grid">
-                    <div>
-                        <div class="field-row">
-                            <div class="field">
-                                <label for="latitude">Latitude</label>
-                                <input type="text" id="latitude" name="latitude" inputmode="decimal"
-                                       value="<?= e($form['latitude']) ?>" placeholder="-0.0263">
+                    <section class="product-top">
+                        <div>
+                            <div id="photo-preview"
+                                 class="photo-box<?= $photoUrl ? ' has-image' : '' ?>"
+                                 <?= $photoUrl ? 'style="background-image:url(\'' . e($photoUrl) . '\')"' : '' ?>>
+                                <span class="photo-box__empty">Belum ada foto</span>
                             </div>
+
+                            <input class="visually-hidden" type="file" id="photo" name="photo"
+                                   accept="image/jpeg,image/png,image/webp">
+                            <label class="photo-button" for="photo">
+                                <?= $photoUrl ? 'Ganti foto' : 'Pilih foto' ?>
+                            </label>
+                            <p class="hint">JPG, PNG, atau WebP. Maksimal 5 MB.</p>
+                        </div>
+
+                        <div>
                             <div class="field">
-                                <label for="longitude">Longitude</label>
-                                <input type="text" id="longitude" name="longitude" inputmode="decimal"
-                                       value="<?= e($form['longitude']) ?>" placeholder="109.3425">
+                                <label for="name">Nama kost</label>
+                                <input type="text" id="name" name="name" maxlength="150"
+                                       value="<?= e($form['name']) ?>" required>
+                            </div>
+
+                            <div class="field">
+                                <label for="address">Alamat</label>
+                                <input type="text" id="address" name="address" maxlength="255"
+                                       value="<?= e($form['address']) ?>" required>
+                            </div>
+
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="city">Kota / Daerah</label>
+                                    <input type="text" id="city" name="city" maxlength="100"
+                                           value="<?= e($form['city']) ?>" required>
+                                </div>
+                                <div class="field">
+                                    <label for="type">Tipe hunian</label>
+                                    <select id="type" name="type" required>
+                                        <option value="">Pilih tipe</option>
+                                        <?php foreach (['male', 'female', 'mixed', 'house'] as $typeOption): ?>
+                                            <option value="<?= e($typeOption) ?>"<?= $form['type'] === $typeOption ? ' selected' : '' ?>>
+                                                <?= e(typeLabel($typeOption)) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="description">Deskripsi</label>
+                                <textarea id="description" name="description"><?= e($form['description']) ?></textarea>
+                            </div>
+
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="price_per_month">Harga / bulan (Rp)</label>
+                                    <input type="number" id="price_per_month" name="price_per_month" min="0" step="1"
+                                           value="<?= e($form['price_per_month']) ?>" required>
+                                    <p class="hint">Isi dengan harga mulai dari (kamar termurah).</p>
+                                </div>
+                                <div class="field">
+                                    <label for="status">Status</label>
+                                    <select id="status" name="status">
+                                        <?php foreach (['available', 'full'] as $statusOption): ?>
+                                            <option value="<?= e($statusOption) ?>"<?= $form['status'] === $statusOption ? ' selected' : '' ?>>
+                                                <?= e(statusLabel($statusOption)) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="total_rooms">Jumlah kamar</label>
+                                    <input type="number" id="total_rooms" name="total_rooms" min="1" max="1000" step="1"
+                                           value="<?= e($form['total_rooms']) ?>" required>
+                                    <p class="hint">Total kamar di kost ini. Beda dengan tipe kamar.</p>
+                                </div>
+                                <div class="field">
+                                    <label for="contact">Kontak (WhatsApp)</label>
+                                    <input type="tel" id="contact" name="contact" maxlength="20"
+                                           value="<?= e($form['contact']) ?>" placeholder="08123456789" required>
+                                    <p class="hint">Nomor 08... otomatis disimpan sebagai 628...</p>
+                                </div>
                             </div>
                         </div>
-                        <p class="hint">Cara dapat koordinat: buka Google Maps, klik kanan di lokasi kost, lalu klik angka koordinatnya untuk menyalin. Boleh dikosongkan.</p>
-                    </div>
+                    </section>
 
-                    <?php if ($mapUrl): ?>
-                        <iframe class="map-preview" src="<?= e($mapUrl) ?>" title="Peta lokasi kost" loading="lazy"></iframe>
-                    <?php else: ?>
-                        <div class="map-empty">Peta muncul di sini setelah koordinat disimpan.</div>
+                    <section class="product-section">
+                        <h2>Galeri Foto</h2>
+                        <p class="hint">Foto tambahan untuk slider di halaman detail (maksimal <?= MAX_GALLERY_IMAGES ?> foto, masing-masing 5 MB). Foto utama di atas dipakai sebagai gambar sampul.</p>
+
+                        <?php if (!empty($galleryImages)): ?>
+                            <div class="gallery-admin">
+                                <?php foreach ($galleryImages as $image): ?>
+                                    <?php $imageUrl = uploadFileExists('boarding_houses', $image['image']) ? uploadUrl('boarding_houses', $image['image']) : null; ?>
+                                    <div class="gallery-admin__item">
+                                        <span class="gallery-admin__thumb"<?= $imageUrl ? ' style="background-image:url(\'' . e($imageUrl) . '\')"' : '' ?>></span>
+                                        <label class="gallery-admin__check">
+                                            <input type="checkbox" name="delete_images[]" value="<?= (int) $image['id'] ?>"> Hapus
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="field">
+                            <label for="gallery">Tambah foto galeri</label>
+                            <input type="file" id="gallery" name="gallery[]" multiple accept="image/jpeg,image/png,image/webp">
+                        </div>
+                    </section>
+
+                    <section class="product-section">
+                        <div class="section-head">
+                            <h2>Pilihan Kamar</h2>
+                            <?php if ($mode === 'edit'): ?>
+                                <a class="btn btn-green btn-small"
+                                   href="<?= BASE_URL ?>/admin/room_form.php?mode=add&amp;house_id=<?= (int) $id ?>&amp;from=house">Tambah Kamar</a>
+                            <?php endif; ?>
+                        </div>
+
+                        <?php if ($mode === 'add'): ?>
+                            <p class="hint">Simpan data kost dulu, lalu pilihan kamar bisa ditambahkan di bagian ini.</p>
+                        <?php elseif (empty($rooms)): ?>
+                            <p class="hint">Belum ada pilihan kamar. Klik Tambah Kamar untuk membuat yang pertama.</p>
+                        <?php else: ?>
+                            <div class="room-grid">
+                                <?php foreach ($rooms as $room): ?>
+                                    <?php $roomPhotoUrl = uploadUrl('rooms', $room['photo']); ?>
+                                    <article class="room-card">
+                                        <div class="room-card__photo"<?= $roomPhotoUrl ? ' style="background-image:url(\'' . e($roomPhotoUrl) . '\')"' : '' ?>></div>
+                                        <div class="room-card__body">
+                                            <div class="room-card__name"><?= e($room['name']) ?></div>
+                                            <div class="room-card__meta"><?= e($room['room_type']) ?></div>
+                                            <?php if (!empty($room['description'])): ?>
+                                                <div class="room-card__meta">Desc: <?= e($room['description']) ?></div>
+                                            <?php endif; ?>
+                                            <div class="room-card__price"><?= e(formatRupiah($room['price_per_month'])) ?></div>
+                                            <span class="badge badge-<?= e($room['status']) ?>"><?= e(statusLabel($room['status'])) ?></span>
+                                        </div>
+                                        <div class="room-card__actions">
+                                            <a class="btn btn-small btn-orange"
+                                               href="<?= BASE_URL ?>/admin/room_form.php?mode=edit&amp;id=<?= (int) $room['id'] ?>&amp;from=house">Edit</a>
+                                            <button type="submit" form="delete-room-<?= (int) $room['id'] ?>"
+                                                    class="btn btn-small btn-red">Hapus</button>
+                                        </div>
+                                    </article>
+                                <?php endforeach; ?>
+                            </div>
                     <?php endif; ?>
+                </section>
+
+                <section class="product-section">
+                    <h2>Lokasi di peta</h2>
+                    <div class="map-grid">
+                        <div>
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="latitude">Latitude</label>
+                                    <input type="text" id="latitude" name="latitude" inputmode="decimal"
+                                           value="<?= e($form['latitude']) ?>" placeholder="-0.0263">
+                                </div>
+                                <div class="field">
+                                    <label for="longitude">Longitude</label>
+                                    <input type="text" id="longitude" name="longitude" inputmode="decimal"
+                                           value="<?= e($form['longitude']) ?>" placeholder="109.3425">
+                                </div>
+                            </div>
+                            <p class="hint">Cara dapat koordinat: buka Google Maps, klik kanan di lokasi kost, lalu klik angka koordinatnya untuk menyalin. Boleh dikosongkan.</p>
+                        </div>
+
+                        <?php if ($mapUrl): ?>
+                            <iframe class="map-preview" src="<?= e($mapUrl) ?>" title="Peta lokasi kost" loading="lazy"></iframe>
+                        <?php else: ?>
+                            <div class="map-empty">Peta muncul di sini setelah koordinat disimpan.</div>
+                        <?php endif; ?>
+                    </div>
+                </section>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-green">Simpan</button>
+                    <a class="btn btn-ghost" href="<?= BASE_URL ?>/admin/boarding_houses.php">Batal</a>
                 </div>
-            </section>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-green">Simpan</button>
-                <a class="btn btn-ghost" href="<?= BASE_URL ?>/admin/boarding_houses.php">Batal</a>
-            </div>
-        </form>
-
-        <?php /* Delete forms live outside the main form (forms cannot be nested).
-                 The Hapus buttons above point to them with the "form" attribute. */ ?>
-        <?php foreach ($rooms as $room): ?>
-            <form id="delete-room-<?= (int) $room['id'] ?>" method="post" action="<?= BASE_URL ?>/admin/rooms.php"
-                  onsubmit="return confirm('Hapus kamar &quot;<?= e(addslashes($room['name'])) ?>&quot;?');">
-                <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-                <input type="hidden" name="action" value="delete">
-                <input type="hidden" name="id" value="<?= (int) $room['id'] ?>">
-                <input type="hidden" name="from_house" value="<?= (int) $id ?>">
             </form>
-        <?php endforeach; ?>
-    </div>
-    </div>
-<?php require __DIR__ . '/includes/admin_footer.php'; ?>
+
+            <?php /* Delete forms live outside the main form (forms cannot be nested).
+                     The Hapus buttons above point to them with the "form" attribute. */ ?>
+            <?php foreach ($rooms as $room): ?>
+                <form id="delete-room-<?= (int) $room['id'] ?>" method="post" action="<?= BASE_URL ?>/admin/rooms.php"
+                      onsubmit="return confirm('Hapus kamar &quot;<?= e(addslashes($room['name'])) ?>&quot;?');">
+                    <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="id" value="<?= (int) $room['id'] ?>">
+                    <input type="hidden" name="from_house" value="<?= (int) $id ?>">
+                </form>
+            <?php endforeach; ?>
+            </div>
+        </div>
+    </main>
+</div>
+<?php foreach ($extraJs as $jsFile): ?>
+    <script src="<?= BASE_URL ?>/assets/js/<?= e($jsFile) ?>" defer></script>
+<?php endforeach; ?>
+</body>
+</html>

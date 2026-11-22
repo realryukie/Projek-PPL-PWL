@@ -120,6 +120,7 @@ function searchPageUrl(int $targetPage): string
 
 $pageTitle = 'Cari Kos - Kostku';
 $extraCss  = ['search.css'];
+$extraJs   = [];
 $searchBar = [
     'location'  => $location,
     'date_in'   => $dateIn,
@@ -131,58 +132,86 @@ $searchBar = [
 ];
 $flashSuccess = getFlash('success');
 $flashError   = getFlash('error');
-require __DIR__ . '/includes/page_head.php';
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        if (new URLSearchParams(window.location.search).has('scroll_to')) {
+            window.history.scrollRestoration = 'manual';
+        }
+    </script>
+    <title><?= e($pageTitle) ?></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/site.css?v=<?= (int) filemtime(__DIR__ . '/assets/css/site.css') ?>">
+    <?php foreach ($extraCss as $cssFile): ?>
+        <?php $cssPath = __DIR__ . '/assets/css/' . $cssFile; ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/<?= e($cssFile) ?>?v=<?= (int) filemtime($cssPath) ?>">
+    <?php endforeach; ?>
+</head>
+<body>
+<?php
 require __DIR__ . '/includes/header.php';
 ?>
-    <main class="container search-results">
-        <?php if ($flashSuccess): ?>
-            <div class="alert alert-success" role="status"><?= e($flashSuccess) ?></div>
-        <?php endif; ?>
-        <?php if ($flashError): ?>
-            <div class="alert alert-error" role="alert"><?= e($flashError) ?></div>
-        <?php endif; ?>
-        <?php if ($notice): ?>
-            <div class="alert alert-error" role="alert"><?= e($notice) ?></div>
-        <?php endif; ?>
+<main class="container search-results">
+    <?php if ($flashSuccess): ?>
+        <div class="alert alert-success" role="status"><?= e($flashSuccess) ?></div>
+    <?php endif; ?>
+    <?php if ($flashError): ?>
+        <div class="alert alert-error" role="alert"><?= e($flashError) ?></div>
+    <?php endif; ?>
+    <?php if ($notice): ?>
+        <div class="alert alert-error" role="alert"><?= e($notice) ?></div>
+    <?php endif; ?>
 
-        <p class="result-count">
-            <?= $totalItems ?> kost ditemukan<?= $location !== '' ? ' untuk "' . e($location) . '"' : '' ?>
-        </p>
+    <p class="result-count">
+        <?= $totalItems ?> kost ditemukan<?= $location !== '' ? ' untuk "' . e($location) . '"' : '' ?>
+    </p>
 
-        <?php if (empty($houses)): ?>
-            <div class="empty-state">
-                <p>Tidak ada kost yang cocok dengan pencarianmu.</p>
-                <a class="btn btn-ghost" href="<?= BASE_URL ?>/search.php">Hapus semua filter</a>
-            </div>
-        <?php else: ?>
-            <div class="house-grid">
-                <?php foreach ($houses as $house): ?>
-                    <?php renderHouseCard($house); ?>
-                <?php endforeach; ?>
-            </div>
+    <?php if (empty($houses)): ?>
+        <div class="empty-state">
+            <p>Tidak ada kost yang cocok dengan pencarianmu.</p>
+            <a class="btn btn-ghost" href="<?= BASE_URL ?>/search.php">Hapus semua filter</a>
+        </div>
+    <?php else: ?>
+        <div class="house-grid">
+            <?php foreach ($houses as $house): ?>
+                <?php renderHouseCard($house); ?>
+            <?php endforeach; ?>
+        </div>
 
-            <?php if ($totalPages > 1): ?>
-                <nav class="pagination" aria-label="Halaman hasil">
-                    <?php if ($page > 1): ?>
-                        <a href="<?= e(searchPageUrl($page - 1)) ?>" aria-label="Halaman sebelumnya">&larr;</a>
+        <?php if ($totalPages > 1): ?>
+            <nav class="pagination" aria-label="Halaman hasil">
+                <?php if ($page > 1): ?>
+                    <a href="<?= e(searchPageUrl($page - 1)) ?>" aria-label="Halaman sebelumnya">&larr;</a>
+                <?php endif; ?>
+
+                <?php for ($p = max(1, $page - 2); $p <= min($totalPages, $page + 2); $p++): ?>
+                    <?php if ($p === $page): ?>
+                        <span class="is-current" aria-current="page"><?= $p ?></span>
+                    <?php else: ?>
+                        <a href="<?= e(searchPageUrl($p)) ?>"><?= $p ?></a>
                     <?php endif; ?>
+                <?php endfor; ?>
 
-                    <?php for ($p = max(1, $page - 2); $p <= min($totalPages, $page + 2); $p++): ?>
-                        <?php if ($p === $page): ?>
-                            <span class="is-current" aria-current="page"><?= $p ?></span>
-                        <?php else: ?>
-                            <a href="<?= e(searchPageUrl($p)) ?>"><?= $p ?></a>
-                        <?php endif; ?>
-                    <?php endfor; ?>
-
-                    <?php if ($page < $totalPages): ?>
-                        <a href="<?= e(searchPageUrl($page + 1)) ?>" aria-label="Halaman berikutnya">&rarr;</a>
-                    <?php endif; ?>
-                </nav>
-            <?php endif; ?>
+                <?php if ($page < $totalPages): ?>
+                    <a href="<?= e(searchPageUrl($page + 1)) ?>" aria-label="Halaman berikutnya">&rarr;</a>
+                <?php endif; ?>
+            </nav>
         <?php endif; ?>
-    </main>
+    <?php endif; ?>
+</main>
 <?php
 require __DIR__ . '/includes/footer.php';
-require __DIR__ . '/includes/page_end.php';
 ?>
+<script src="<?= BASE_URL ?>/assets/js/footer-scroll.js?v=<?= (int) filemtime(__DIR__ . '/assets/js/footer-scroll.js') ?>" defer></script>
+<?php foreach ($extraJs as $jsFile): ?>
+    <?php $jsPath = __DIR__ . '/assets/js/' . $jsFile; ?>
+    <script src="<?= BASE_URL ?>/assets/js/<?= e($jsFile) ?>?v=<?= (int) filemtime($jsPath) ?>" defer></script>
+<?php endforeach; ?>
+</body>
+</html>

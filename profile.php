@@ -209,194 +209,220 @@ $extraCss   = ['profile.css'];
 $extraJs    = ['profile.js'];
 $flashSuccess = getFlash('success');
 $flashError   = getFlash('error');
-require __DIR__ . '/includes/page_head.php';
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        if (new URLSearchParams(window.location.search).has('scroll_to')) {
+            window.history.scrollRestoration = 'manual';
+        }
+    </script>
+    <title><?= e($pageTitle) ?></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/site.css?v=<?= (int) filemtime(__DIR__ . '/assets/css/site.css') ?>">
+    <?php foreach ($extraCss as $cssFile): ?>
+        <?php $cssPath = __DIR__ . '/assets/css/' . $cssFile; ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/<?= e($cssFile) ?>?v=<?= (int) filemtime($cssPath) ?>">
+    <?php endforeach; ?>
+</head>
+<body>
+<?php
 require __DIR__ . '/includes/header.php';
 ?>
-    <div class="profile-layout">
-        <aside class="profile-sidebar">
-            <h2>PROFIL</h2>
-            <nav aria-label="Menu profil">
-                <a href="<?= BASE_URL ?>/profile.php?tab=account"   class="<?= $tab === 'account' ? 'is-active' : '' ?>">Detail Akun</a>
-                <a href="<?= BASE_URL ?>/profile.php?tab=history"   class="<?= $tab === 'history' ? 'is-active' : '' ?>">Histori Pemesanan</a>
-                <a href="<?= BASE_URL ?>/profile.php?tab=favorites" class="<?= $tab === 'favorites' ? 'is-active' : '' ?>">Favorit</a>
-            </nav>
-        </aside>
+<div class="profile-layout">
+    <aside class="profile-sidebar">
+        <h2>PROFIL</h2>
+        <nav aria-label="Menu profil">
+            <a href="<?= BASE_URL ?>/profile.php?tab=account"   class="<?= $tab === 'account' ? 'is-active' : '' ?>">Detail Akun</a>
+            <a href="<?= BASE_URL ?>/profile.php?tab=history"   class="<?= $tab === 'history' ? 'is-active' : '' ?>">Histori Pemesanan</a>
+            <a href="<?= BASE_URL ?>/profile.php?tab=favorites" class="<?= $tab === 'favorites' ? 'is-active' : '' ?>">Favorit</a>
+        </nav>
+    </aside>
 
-        <main class="profile-content">
-            <?php if ($flashSuccess): ?>
-                <div class="alert alert-success" role="status"><?= e($flashSuccess) ?></div>
+    <main class="profile-content">
+        <?php if ($flashSuccess): ?>
+            <div class="alert alert-success" role="status"><?= e($flashSuccess) ?></div>
+        <?php endif; ?>
+        <?php if ($flashError): ?>
+            <div class="alert alert-error" role="alert"><?= e($flashError) ?></div>
+        <?php endif; ?>
+
+        <?php if ($tab === 'account'): ?>
+            <?php if (!empty($errors)): ?>
+                <div class="alert alert-error" role="alert">
+                    <?php foreach ($errors as $error): ?>
+                        <p><?= e($error) ?></p>
+                    <?php endforeach; ?>
+                </div>
             <?php endif; ?>
-            <?php if ($flashError): ?>
-                <div class="alert alert-error" role="alert"><?= e($flashError) ?></div>
-            <?php endif; ?>
 
-            <?php if ($tab === 'account'): ?>
-                <?php if (!empty($errors)): ?>
-                    <div class="alert alert-error" role="alert">
-                        <?php foreach ($errors as $error): ?>
-                            <p><?= e($error) ?></p>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
+            <form id="profile-form" method="post" action="<?= BASE_URL ?>/profile.php?tab=account"
+                  enctype="multipart/form-data" novalidate<?= $startEditing ? ' data-start-editing="1"' : '' ?>>
+                <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                <input type="hidden" name="action" value="update_profile">
 
-                <form id="profile-form" method="post" action="<?= BASE_URL ?>/profile.php?tab=account"
-                      enctype="multipart/form-data" novalidate<?= $startEditing ? ' data-start-editing="1"' : '' ?>>
-                    <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-                    <input type="hidden" name="action" value="update_profile">
-
-                    <div class="profile-head">
-                        <div class="profile-avatar-wrap">
-                            <div id="avatar-preview" class="profile-avatar"<?= $avatarUrl ? ' style="background-image:url(\'' . e($avatarUrl) . '\')"' : '' ?>></div>
-                            <input class="visually-hidden" type="file" id="profile_photo" name="profile_photo"
-                                   accept="image/jpeg,image/png,image/webp">
-                            <label class="avatar-edit" for="profile_photo" hidden>Ganti foto</label>
-                        </div>
-
-                        <div class="profile-head__name">
-                            <h1><?= e($displayName) ?></h1>
-                            <p>ID: <?= (int) $user['id'] ?></p>
-                        </div>
-
-                        <div class="profile-head__actions">
-                            <button type="button" id="edit-profile" class="btn btn-orange">Edit Profil</button>
-                            <a class="btn btn-red" href="<?= BASE_URL ?>/auth/logout.php">Log Out</a>
-                        </div>
+                <div class="profile-head">
+                    <div class="profile-avatar-wrap">
+                        <div id="avatar-preview" class="profile-avatar"<?= $avatarUrl ? ' style="background-image:url(\'' . e($avatarUrl) . '\')"' : '' ?>></div>
+                        <input class="visually-hidden" type="file" id="profile_photo" name="profile_photo"
+                               accept="image/jpeg,image/png,image/webp">
+                        <label class="avatar-edit" for="profile_photo" hidden>Ganti foto</label>
                     </div>
 
-                    <div class="profile-field">
-                        <label for="name">Nama:</label>
-                        <input type="text" id="name" name="name" maxlength="100" value="<?= e($form['name']) ?>" data-editable readonly>
+                    <div class="profile-head__name">
+                        <h1><?= e($displayName) ?></h1>
+                        <p>ID: <?= (int) $user['id'] ?></p>
                     </div>
 
-                    <div class="profile-field">
-                        <label for="description">Desc:</label>
-                        <textarea id="description" name="description" rows="2" maxlength="500" data-editable readonly><?= e($form['description']) ?></textarea>
+                    <div class="profile-head__actions">
+                        <button type="button" id="edit-profile" class="btn btn-orange">Edit Profil</button>
+                        <a class="btn btn-red" href="<?= BASE_URL ?>/auth/logout.php">Log Out</a>
                     </div>
-
-                    <div class="profile-field">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" maxlength="150" value="<?= e($form['email']) ?>" data-editable readonly>
-                    </div>
-
-                    <div class="profile-field">
-                        <label for="phone_number">Nomor Telepon:</label>
-                        <div class="phone-row">
-                            <select name="country_code" aria-label="Kode negara" data-editable disabled>
-                                <?php foreach ($countryCodes as $code => $label): ?>
-                                    <option value="<?= e($code) ?>"<?= $form['country_code'] === $code ? ' selected' : '' ?>><?= e($label) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                            <input type="tel" id="phone_number" name="phone_number" maxlength="20" inputmode="numeric"
-                                   value="<?= e($form['phone_number']) ?>" data-editable readonly>
-                        </div>
-                    </div>
-
-                    <div class="profile-field">
-                        <label for="new_password">Ubah Sandi:</label>
-                        <div class="password-row">
-                            <input type="password" id="new_password" name="new_password" autocomplete="new-password"
-                                   placeholder="Kosongkan jika tidak diubah" data-editable readonly>
-                            <button type="button" class="eye-button" data-toggle-password="new_password" aria-label="Tampilkan sandi" aria-pressed="false">
-                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="profile-field">
-                        <label for="confirm_password">Konfirmasi Sandi:</label>
-                        <div class="password-row">
-                            <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password"
-                                   data-editable readonly>
-                            <button type="button" class="eye-button" data-toggle-password="confirm_password" aria-label="Tampilkan sandi" aria-pressed="false">
-                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="profile-save-bar" hidden>
-                        <button type="submit" class="btn btn-green">Simpan</button>
-                        <button type="button" class="btn btn-ghost" data-cancel-edit>Batal</button>
-                    </div>
-                </form>
-
-            <?php elseif ($tab === 'history'): ?>
-                <div class="list-head">
-                    <h1>Histori</h1>
-                    <?php if (!empty($bookings)): ?>
-                        <form method="post" action="" onsubmit="return confirm('Bersihkan semua histori pemesanan?');">
-                            <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-                            <input type="hidden" name="action" value="clear_history">
-                            <button type="submit" class="btn btn-red">Bersihkan Histori</button>
-                        </form>
-                    <?php endif; ?>
                 </div>
 
-                <?php if (empty($bookings)): ?>
-                    <p class="empty-note">Belum ada histori pemesanan.</p>
-                <?php endif; ?>
-
-                <?php foreach ($bookings as $booking): ?>
-                    <?php
-                    $thumbUrl = uploadUrl('rooms', $booking['room_photo']) ?? uploadUrl('boarding_houses', $booking['boarding_house_photo']);
-                    ?>
-                    <article class="list-card">
-                        <div class="list-card__thumb list-card__thumb--wide"<?= $thumbUrl ? ' style="background-image:url(\'' . e($thumbUrl) . '\')"' : '' ?>></div>
-                        <div class="list-card__info">
-                            <a class="list-card__title" href="<?= e(houseDetailUrl((int) $booking['boarding_house_id'])) ?>"><?= e($booking['boarding_house_name']) ?></a>
-                            <div class="list-card__line"><?= e($booking['room_name']) ?></div>
-                            <div class="list-card__line"><?= e(formatRupiah($booking['total_price'])) ?></div>
-                            <div class="list-card__line small"><?= e(formatRupiah($booking['price_at_booking'])) ?> / bulan</div>
-                            <div class="list-card__line small"><?= e(formatDate($booking['check_in_date'])) ?> - <?= e(formatDate($booking['check_out_date'])) ?></div>
-                            <span class="badge badge-<?= e($booking['status']) ?>"><?= e(statusLabel($booking['status'])) ?></span>
-                        </div>
-                        <form method="post" action="" onsubmit="return confirm('Hapus dari histori?');">
-                            <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-                            <input type="hidden" name="action" value="delete_history">
-                            <input type="hidden" name="id" value="<?= (int) $booking['id'] ?>">
-                            <button type="submit" class="icon-button" aria-label="Hapus dari histori"><?= $trashIcon ?></button>
-                        </form>
-                    </article>
-                <?php endforeach; ?>
-
-            <?php else: ?>
-                <div class="list-head">
-                    <h1>Favorit</h1>
-                    <?php if (!empty($favorites)): ?>
-                        <form method="post" action="" onsubmit="return confirm('Bersihkan semua favorit?');">
-                            <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-                            <input type="hidden" name="action" value="clear_favorites">
-                            <button type="submit" class="btn btn-red">Bersihkan Favorit</button>
-                        </form>
-                    <?php endif; ?>
+                <div class="profile-field">
+                    <label for="name">Nama:</label>
+                    <input type="text" id="name" name="name" maxlength="100" value="<?= e($form['name']) ?>" data-editable readonly>
                 </div>
 
-                <?php if (empty($favorites)): ?>
-                    <p class="empty-note">Belum ada kost favorit. Buka detail kost lalu klik Tambah ke Favorit.</p>
-                <?php endif; ?>
+                <div class="profile-field">
+                    <label for="description">Desc:</label>
+                    <textarea id="description" name="description" rows="2" maxlength="500" data-editable readonly><?= e($form['description']) ?></textarea>
+                </div>
 
-                <?php foreach ($favorites as $favorite): ?>
-                    <?php $thumbUrl = uploadUrl('boarding_houses', $favorite['photo']); ?>
-                    <article class="list-card">
-                        <div class="list-card__thumb"<?= $thumbUrl ? ' style="background-image:url(\'' . e($thumbUrl) . '\')"' : '' ?>></div>
-                        <div class="list-card__info">
-                            <a class="list-card__title" href="<?= e(houseDetailUrl((int) $favorite['id'])) ?>"><?= e($favorite['name']) ?></a>
-                            <div class="list-card__line"><?= e(formatRupiah($favorite['price_per_month'])) ?></div>
-                            <div class="list-card__line small">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
-                                <?= e($favorite['city']) ?>
-                            </div>
-                        </div>
-                        <form method="post" action="">
-                            <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-                            <input type="hidden" name="action" value="remove_favorite">
-                            <input type="hidden" name="house_id" value="<?= (int) $favorite['id'] ?>">
-                            <button type="submit" class="icon-button" aria-label="Hapus dari favorit"><?= $trashIcon ?></button>
-                        </form>
-                    </article>
-                <?php endforeach; ?>
+                <div class="profile-field">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" maxlength="150" value="<?= e($form['email']) ?>" data-editable readonly>
+                </div>
+
+                <div class="profile-field">
+                    <label for="phone_number">Nomor Telepon:</label>
+                    <div class="phone-row">
+                        <select name="country_code" aria-label="Kode negara" data-editable disabled>
+                            <?php foreach ($countryCodes as $code => $label): ?>
+                                <option value="<?= e($code) ?>"<?= $form['country_code'] === $code ? ' selected' : '' ?>><?= e($label) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <input type="tel" id="phone_number" name="phone_number" maxlength="20" inputmode="numeric"
+                               value="<?= e($form['phone_number']) ?>" data-editable readonly>
+                    </div>
+                </div>
+
+                <div class="profile-field">
+                    <label for="new_password">Ubah Sandi:</label>
+                    <div class="password-row">
+                        <input type="password" id="new_password" name="new_password" autocomplete="new-password"
+                               placeholder="Kosongkan jika tidak diubah" data-editable readonly>
+                        <button type="button" class="eye-button" data-toggle-password="new_password" aria-label="Tampilkan sandi" aria-pressed="false">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="profile-field">
+                    <label for="confirm_password">Konfirmasi Sandi:</label>
+                    <div class="password-row">
+                        <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password"
+                               data-editable readonly>
+                        <button type="button" class="eye-button" data-toggle-password="confirm_password" aria-label="Tampilkan sandi" aria-pressed="false">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="profile-save-bar" hidden>
+                    <button type="submit" class="btn btn-green">Simpan</button>
+                    <button type="button" class="btn btn-ghost" data-cancel-edit>Batal</button>
+                </div>
+            </form>
+
+        <?php elseif ($tab === 'history'): ?>
+            <div class="list-head">
+                <h1>Histori</h1>
+                <?php if (!empty($bookings)): ?>
+                    <form method="post" action="" onsubmit="return confirm('Bersihkan semua histori pemesanan?');">
+                        <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                        <input type="hidden" name="action" value="clear_history">
+                        <button type="submit" class="btn btn-red">Bersihkan Histori</button>
+                    </form>
+                <?php endif; ?>
+            </div>
+
+            <?php if (empty($bookings)): ?>
+                <p class="empty-note">Belum ada histori pemesanan.</p>
             <?php endif; ?>
-        </main>
-    </div>
-    <?php
-    require __DIR__ . '/includes/page_end.php';
-    ?>
+
+            <?php foreach ($bookings as $booking): ?>
+                <?php
+                $thumbUrl = uploadUrl('rooms', $booking['room_photo']) ?? uploadUrl('boarding_houses', $booking['boarding_house_photo']);
+                ?>
+                <article class="list-card">
+                    <div class="list-card__thumb list-card__thumb--wide"<?= $thumbUrl ? ' style="background-image:url(\'' . e($thumbUrl) . '\')"' : '' ?>></div>
+                    <div class="list-card__info">
+                        <a class="list-card__title" href="<?= e(houseDetailUrl((int) $booking['boarding_house_id'])) ?>"><?= e($booking['boarding_house_name']) ?></a>
+                        <div class="list-card__line"><?= e($booking['room_name']) ?></div>
+                        <div class="list-card__line"><?= e(formatRupiah($booking['total_price'])) ?></div>
+                        <div class="list-card__line small"><?= e(formatRupiah($booking['price_at_booking'])) ?> / bulan</div>
+                        <div class="list-card__line small"><?= e(formatDate($booking['check_in_date'])) ?> - <?= e(formatDate($booking['check_out_date'])) ?></div>
+                        <span class="badge badge-<?= e($booking['status']) ?>"><?= e(statusLabel($booking['status'])) ?></span>
+                    </div>
+                    <form method="post" action="" onsubmit="return confirm('Hapus dari histori?');">
+                        <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                        <input type="hidden" name="action" value="delete_history">
+                        <input type="hidden" name="id" value="<?= (int) $booking['id'] ?>">
+                        <button type="submit" class="icon-button" aria-label="Hapus dari histori"><?= $trashIcon ?></button>
+                    </form>
+                </article>
+            <?php endforeach; ?>
+
+        <?php else: ?>
+            <div class="list-head">
+                <h1>Favorit</h1>
+                <?php if (!empty($favorites)): ?>
+                    <form method="post" action="" onsubmit="return confirm('Bersihkan semua favorit?');">
+                        <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                        <input type="hidden" name="action" value="clear_favorites">
+                        <button type="submit" class="btn btn-red">Bersihkan Favorit</button>
+                    </form>
+                <?php endif; ?>
+            </div>
+
+            <?php if (empty($favorites)): ?>
+                <p class="empty-note">Belum ada kost favorit. Buka detail kost lalu klik Tambah ke Favorit.</p>
+            <?php endif; ?>
+
+            <?php foreach ($favorites as $favorite): ?>
+                <?php $thumbUrl = uploadUrl('boarding_houses', $favorite['photo']); ?>
+                <article class="list-card">
+                    <div class="list-card__thumb"<?= $thumbUrl ? ' style="background-image:url(\'' . e($thumbUrl) . '\')"' : '' ?>></div>
+                    <div class="list-card__info">
+                        <a class="list-card__title" href="<?= e(houseDetailUrl((int) $favorite['id'])) ?>"><?= e($favorite['name']) ?></a>
+                        <div class="list-card__line"><?= e(formatRupiah($favorite['price_per_month'])) ?></div>
+                        <div class="list-card__line small">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
+                            <?= e($favorite['city']) ?>
+                        </div>
+                    </div>
+                    <form method="post" action="">
+                        <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                        <input type="hidden" name="action" value="remove_favorite">
+                        <input type="hidden" name="house_id" value="<?= (int) $favorite['id'] ?>">
+                        <button type="submit" class="icon-button" aria-label="Hapus dari favorit"><?= $trashIcon ?></button>
+                    </form>
+                </article>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </main>
+</div>
+    <script src="<?= BASE_URL ?>/assets/js/footer-scroll.js?v=<?= (int) filemtime(__DIR__ . '/assets/js/footer-scroll.js') ?>" defer></script>
+    <?php foreach ($extraJs as $jsFile): ?>
+        <?php $jsPath = __DIR__ . '/assets/js/' . $jsFile; ?>
+        <script src="<?= BASE_URL ?>/assets/js/<?= e($jsFile) ?>?v=<?= (int) filemtime($jsPath) ?>" defer></script>
+    <?php endforeach; ?>
+</body>
+</html>

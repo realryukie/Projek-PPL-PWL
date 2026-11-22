@@ -149,98 +149,134 @@ $backUrl = ($fromHouse && $backHouseId > 0)
 $pageTitle  = $mode === 'add' ? 'Tambah Kamar' : 'Edit Kamar';
 $activeMenu = 'rooms';
 $extraJs    = ['product_desc.js'];
-require __DIR__ . '/../includes/admin_header.php';
+$extraCss = $extraCss ?? [];
+$adminCssPath = __DIR__ . '/../assets/css/admin.css';
+$flashSuccess = getFlash('success');
+$flashError = getFlash('error');
 ?>
-            <h1><?= $mode === 'add' ? 'Tambah Kamar' : 'Edit Kamar' ?></h1>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= e($pageTitle) ?> - Kostku</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css?v=<?= (int) filemtime($adminCssPath) ?>">
+    <?php foreach ($extraCss as $cssFile): ?>
+        <?php $cssPath = __DIR__ . '/../assets/css/' . $cssFile; ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/<?= e($cssFile) ?>?v=<?= (int) filemtime($cssPath) ?>">
+    <?php endforeach; ?>
+</head>
+<body>
+<?php require __DIR__ . '/../includes/admin_header.php'; ?>
+<div class="admin-shell">
+    <?php require __DIR__ . '/../includes/admin_sidebar.php'; ?>
+    <main class="admin-content">
+        <?php if ($flashSuccess): ?>
+            <div class="alert alert-success" role="status"><?= e($flashSuccess) ?></div>
+        <?php endif; ?>
+        <?php if ($flashError): ?>
+            <div class="alert alert-error" role="alert"><?= e($flashError) ?></div>
+        <?php endif; ?>
 
-            <?php if (!empty($errors)): ?>
-                <div class="alert alert-error" role="alert">
-                    <?php foreach ($errors as $error): ?>
-                        <p><?= e($error) ?></p>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+        <h1><?= $mode === 'add' ? 'Tambah Kamar' : 'Edit Kamar' ?></h1>
 
-            <?php if (empty($houses)): ?>
-                <div class="alert alert-error" role="alert">
-                    Belum ada data kost. Tambahkan kost dulu sebelum menambah kamar.
-                    <a href="<?= BASE_URL ?>/product_desc.php?mode=add">Tambah kost</a>
-                </div>
-            <?php else: ?>
-            <div class="form-card">
-                <form method="post" action="" enctype="multipart/form-data" novalidate>
-                    <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-                    <input type="hidden" name="from" value="<?= $fromHouse ? 'house' : '' ?>">
+        <?php if (!empty($errors)): ?>
+            <div class="alert alert-error" role="alert">
+                <?php foreach ($errors as $error): ?>
+                    <p><?= e($error) ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
 
-                    <div class="form-grid">
-                        <div>
-                            <div id="photo-preview"
-                                 class="photo-box<?= $photoUrl ? ' has-image' : '' ?>"
-                                 <?= $photoUrl ? 'style="background-image:url(\'' . e($photoUrl) . '\')"' : '' ?>>
-                                <span class="photo-box__empty">Belum ada foto</span>
-                            </div>
-                            <input class="visually-hidden" type="file" id="photo" name="photo"
-                                   accept="image/jpeg,image/png,image/webp">
-                            <label class="photo-button" for="photo"><?= $photoUrl ? 'Ganti foto' : 'Pilih foto' ?></label>
-                            <p class="hint">JPG, PNG, atau WebP. Maksimal 5 MB.</p>
+        <?php if (empty($houses)): ?>
+            <div class="alert alert-error" role="alert">
+                Belum ada data kost. Tambahkan kost dulu sebelum menambah kamar.
+                <a href="<?= BASE_URL ?>/product_desc.php?mode=add">Tambah kost</a>
+            </div>
+        <?php else: ?>
+        <div class="form-card">
+            <form method="post" action="" enctype="multipart/form-data" novalidate>
+                <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                <input type="hidden" name="from" value="<?= $fromHouse ? 'house' : '' ?>">
+
+                <div class="form-grid">
+                    <div>
+                        <div id="photo-preview"
+                             class="photo-box<?= $photoUrl ? ' has-image' : '' ?>"
+                             <?= $photoUrl ? 'style="background-image:url(\'' . e($photoUrl) . '\')"' : '' ?>>
+                            <span class="photo-box__empty">Belum ada foto</span>
+                        </div>
+                        <input class="visually-hidden" type="file" id="photo" name="photo"
+                               accept="image/jpeg,image/png,image/webp">
+                        <label class="photo-button" for="photo"><?= $photoUrl ? 'Ganti foto' : 'Pilih foto' ?></label>
+                        <p class="hint">JPG, PNG, atau WebP. Maksimal 5 MB.</p>
+                    </div>
+
+                    <div>
+                        <div class="field">
+                            <label for="boarding_house_id">Kost</label>
+                            <select id="boarding_house_id" name="boarding_house_id" required>
+                                <option value="">Pilih kost</option>
+                                <?php foreach ($houses as $house): ?>
+                                    <option value="<?= (int) $house['id'] ?>"<?= (int) $form['boarding_house_id'] === (int) $house['id'] ? ' selected' : '' ?>>
+                                        <?= e($house['name']) ?> (<?= e($house['city']) ?>)
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
 
-                        <div>
+                        <div class="field-row">
                             <div class="field">
-                                <label for="boarding_house_id">Kost</label>
-                                <select id="boarding_house_id" name="boarding_house_id" required>
-                                    <option value="">Pilih kost</option>
-                                    <?php foreach ($houses as $house): ?>
-                                        <option value="<?= (int) $house['id'] ?>"<?= (int) $form['boarding_house_id'] === (int) $house['id'] ? ' selected' : '' ?>>
-                                            <?= e($house['name']) ?> (<?= e($house['city']) ?>)
+                                <label for="name">Nama kamar</label>
+                                <input type="text" id="name" name="name" maxlength="100"
+                                       value="<?= e($form['name']) ?>" placeholder="Pilihan 1" required>
+                            </div>
+                            <div class="field">
+                                <label for="room_type">Tipe kamar</label>
+                                <input type="text" id="room_type" name="room_type" maxlength="50"
+                                       value="<?= e($form['room_type']) ?>" placeholder="Standard / Deluxe / VIP" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="description">Deskripsi</label>
+                            <textarea id="description" name="description"><?= e($form['description']) ?></textarea>
+                        </div>
+
+                        <div class="field-row">
+                            <div class="field">
+                                <label for="price_per_month">Harga / bulan (Rp)</label>
+                                <input type="number" id="price_per_month" name="price_per_month" min="0" step="1"
+                                       value="<?= e($form['price_per_month']) ?>" required>
+                            </div>
+                            <div class="field">
+                                <label for="status">Status</label>
+                                <select id="status" name="status">
+                                    <?php foreach (['available', 'occupied'] as $statusOption): ?>
+                                        <option value="<?= e($statusOption) ?>"<?= $form['status'] === $statusOption ? ' selected' : '' ?>>
+                                            <?= e(statusLabel($statusOption)) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-
-                            <div class="field-row">
-                                <div class="field">
-                                    <label for="name">Nama kamar</label>
-                                    <input type="text" id="name" name="name" maxlength="100"
-                                           value="<?= e($form['name']) ?>" placeholder="Pilihan 1" required>
-                                </div>
-                                <div class="field">
-                                    <label for="room_type">Tipe kamar</label>
-                                    <input type="text" id="room_type" name="room_type" maxlength="50"
-                                           value="<?= e($form['room_type']) ?>" placeholder="Standard / Deluxe / VIP" required>
-                                </div>
-                            </div>
-
-                            <div class="field">
-                                <label for="description">Deskripsi</label>
-                                <textarea id="description" name="description"><?= e($form['description']) ?></textarea>
-                            </div>
-
-                            <div class="field-row">
-                                <div class="field">
-                                    <label for="price_per_month">Harga / bulan (Rp)</label>
-                                    <input type="number" id="price_per_month" name="price_per_month" min="0" step="1"
-                                           value="<?= e($form['price_per_month']) ?>" required>
-                                </div>
-                                <div class="field">
-                                    <label for="status">Status</label>
-                                    <select id="status" name="status">
-                                        <?php foreach (['available', 'occupied'] as $statusOption): ?>
-                                            <option value="<?= e($statusOption) ?>"<?= $form['status'] === $statusOption ? ' selected' : '' ?>>
-                                                <?= e(statusLabel($statusOption)) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-green">Simpan</button>
-                        <a class="btn btn-outline" href="<?= e($backUrl) ?>">Batal</a>
-                    </div>
-                </form>
-            </div>
-            <?php endif; ?>
-<?php require __DIR__ . '/../includes/admin_footer.php'; ?>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-green">Simpan</button>
+                    <a class="btn btn-outline" href="<?= e($backUrl) ?>">Batal</a>
+                </div>
+            </form>
+        </div>
+        <?php endif; ?>
+    </main>
+</div>
+<?php foreach ($extraJs as $jsFile): ?>
+    <script src="<?= BASE_URL ?>/assets/js/<?= e($jsFile) ?>" defer></script>
+<?php endforeach; ?>
+</body>
+</html>

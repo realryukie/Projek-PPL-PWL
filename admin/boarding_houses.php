@@ -75,81 +75,117 @@ $houses = $stmt->fetchAll();
 
 $pageTitle  = 'Data Kost';
 $activeMenu = 'boarding_houses';
-require __DIR__ . '/../includes/admin_header.php';
+$extraCss = $extraCss ?? [];
+$extraJs = $extraJs ?? [];
+$adminCssPath = __DIR__ . '/../assets/css/admin.css';
+$flashSuccess = getFlash('success');
+$flashError = getFlash('error');
 ?>
-            <h1>Tabel Pengelolaan Data Kost</h1>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= e($pageTitle) ?> - Kostku</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css?v=<?= (int) filemtime($adminCssPath) ?>">
+    <?php foreach ($extraCss as $cssFile): ?>
+        <?php $cssPath = __DIR__ . '/../assets/css/' . $cssFile; ?>
+        <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/<?= e($cssFile) ?>?v=<?= (int) filemtime($cssPath) ?>">
+    <?php endforeach; ?>
+</head>
+<body>
+<?php require __DIR__ . '/../includes/admin_header.php'; ?>
+<div class="admin-shell">
+    <?php require __DIR__ . '/../includes/admin_sidebar.php'; ?>
+    <main class="admin-content">
+        <?php if ($flashSuccess): ?>
+            <div class="alert alert-success" role="status"><?= e($flashSuccess) ?></div>
+        <?php endif; ?>
+        <?php if ($flashError): ?>
+            <div class="alert alert-error" role="alert"><?= e($flashError) ?></div>
+        <?php endif; ?>
+        <h1>Tabel Pengelolaan Data Kost</h1>
 
-            <div class="toolbar">
-                <form method="get" action="">
-                    <input type="search" name="q" placeholder="Cari Kost" value="<?= e($search) ?>" aria-label="Cari kost">
-                    <button type="submit" class="btn btn-outline">Cari</button>
-                </form>
-                <a class="btn btn-green" href="<?= BASE_URL ?>/product_desc.php?mode=add">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 8v8M8 12h8"></path>
-                    </svg>
-                    Add
-                </a>
-            </div>
+        <div class="toolbar">
+            <form method="get" action="">
+                <input type="search" name="q" placeholder="Cari Kost" value="<?= e($search) ?>" aria-label="Cari kost">
+                <button type="submit" class="btn btn-outline">Cari</button>
+            </form>
+            <a class="btn btn-green" href="<?= BASE_URL ?>/product_desc.php?mode=add">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 8v8M8 12h8"></path>
+                </svg>
+                Add
+            </a>
+        </div>
 
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Nama Kost</th>
+                        <th>Jumlah Kamar</th>
+                        <th>Harga / Bulan</th>
+                        <th>Status</th>
+                        <th>Kota / Daerah</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($houses)): ?>
                         <tr>
-                            <th>Nama Kost</th>
-                            <th>Jumlah Kamar</th>
-                            <th>Harga / Bulan</th>
-                            <th>Status</th>
-                            <th>Kota / Daerah</th>
-                            <th>Action</th>
+                            <td colspan="6" class="empty-row">
+                                <?php if ($search !== ''): ?>
+                                    Tidak ada kost yang cocok dengan "<?= e($search) ?>".
+                                <?php else: ?>
+                                    Belum ada data kost. Klik Add untuk menambahkan kost pertama.
+                                <?php endif; ?>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($houses)): ?>
-                            <tr>
-                                <td colspan="6" class="empty-row">
-                                    <?php if ($search !== ''): ?>
-                                        Tidak ada kost yang cocok dengan "<?= e($search) ?>".
-                                    <?php else: ?>
-                                        Belum ada data kost. Klik Add untuk menambahkan kost pertama.
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
+                    <?php endif; ?>
 
-                        <?php foreach ($houses as $house): ?>
-                            <?php $photoUrl = uploadUrl('boarding_houses', $house['photo']); ?>
-                            <tr>
-                                <td>
-                                    <div class="cell-name">
-                                        <span class="thumb"<?= $photoUrl ? ' style="background-image:url(\'' . e($photoUrl) . '\')"' : '' ?>></span>
-                                        <?= e($house['name']) ?>
-                                    </div>
-                                </td>
-                                <td><?= (int) $house['total_rooms'] ?></td>
-                                <td><?= e(formatRupiah($house['price_per_month'])) ?></td>
-                                <td>
-                                    <span class="badge badge-<?= e($house['status']) ?>"><?= e(statusLabel($house['status'])) ?></span>
-                                </td>
-                                <td><?= e($house['city']) ?></td>
-                                <td>
-                                    <div class="row-actions">
-                                        <a class="btn btn-small btn-orange"
-                                           href="<?= BASE_URL ?>/product_desc.php?mode=edit&amp;id=<?= (int) $house['id'] ?>">Edit</a>
+                    <?php foreach ($houses as $house): ?>
+                        <?php $photoUrl = uploadUrl('boarding_houses', $house['photo']); ?>
+                        <tr>
+                            <td>
+                                <div class="cell-name">
+                                    <span class="thumb"<?= $photoUrl ? ' style="background-image:url(\'' . e($photoUrl) . '\')"' : '' ?>></span>
+                                    <?= e($house['name']) ?>
+                                </div>
+                            </td>
+                            <td><?= (int) $house['total_rooms'] ?></td>
+                            <td><?= e(formatRupiah($house['price_per_month'])) ?></td>
+                            <td>
+                                <span class="badge badge-<?= e($house['status']) ?>"><?= e(statusLabel($house['status'])) ?></span>
+                            </td>
+                            <td><?= e($house['city']) ?></td>
+                            <td>
+                                <div class="row-actions">
+                                    <a class="btn btn-small btn-orange"
+                                       href="<?= BASE_URL ?>/product_desc.php?mode=edit&amp;id=<?= (int) $house['id'] ?>">Edit</a>
 
-                                        <form method="post" action=""
-                                              onsubmit="return confirm('Hapus kost &quot;<?= e(addslashes($house['name'])) ?>&quot;? Semua kamarnya ikut terhapus.');">
-                                            <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
-                                            <input type="hidden" name="action" value="delete">
-                                            <input type="hidden" name="id" value="<?= (int) $house['id'] ?>">
-                                            <button type="submit" class="btn btn-small btn-red">Delete</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-<?php require __DIR__ . '/../includes/admin_footer.php'; ?>
+                                    <form method="post" action=""
+                                          onsubmit="return confirm('Hapus kost &quot;<?= e(addslashes($house['name'])) ?>&quot;? Semua kamarnya ikut terhapus.');">
+                                        <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="<?= (int) $house['id'] ?>">
+                                        <button type="submit" class="btn btn-small btn-red">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+<?php foreach ($extraJs as $jsFile): ?>
+    <script src="<?= BASE_URL ?>/assets/js/<?= e($jsFile) ?>" defer></script>
+<?php endforeach; ?>
+</body>
+</html>
