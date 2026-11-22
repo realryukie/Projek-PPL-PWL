@@ -66,15 +66,18 @@ body {
     display: flex;
     align-items: center;
     gap: 10.4px;
+    padding: 8px 10px;
+    border-radius: 8px;
     color: var(--text);
     font-family: "Inter", system-ui, sans-serif;
     font-size: 16.8px;
     font-weight: 600;
     text-decoration: none;
+    transition: background-color 180ms ease;
 }
 
 .admin-web-link:hover {
-    color: var(--green);
+    background: #f3f1ed;
 }
 
 /* ---------- Sidebar ---------- */

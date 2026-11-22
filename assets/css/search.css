@@ -31,7 +31,8 @@
 }
 
 .search-results .pagination a:hover {
-    color: var(--green);
+    border-radius: 6px;
+    background: #f3f1ed;
 }
 
 .search-results .pagination .is-current {
