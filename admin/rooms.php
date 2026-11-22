@@ -158,7 +158,8 @@ $flashError = getFlash('error');
                                        href="<?= BASE_URL ?>/admin/room_form.php?mode=edit&amp;id=<?= (int) $room['id'] ?>">Edit</a>
 
                                     <form method="post" action=""
-                                          onsubmit="return confirm('Hapus kamar &quot;<?= e(addslashes($room['name'])) ?>&quot;?');">
+                                          data-confirm-action="delete"
+                                          data-confirm-message="<?= e('Hapus kamar "' . $room['name'] . '"?') ?>">
                                         <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?= (int) $room['id'] ?>">

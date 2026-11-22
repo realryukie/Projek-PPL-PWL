@@ -148,7 +148,8 @@ $flashError = getFlash('error');
                                        href="<?= BASE_URL ?>/admin/booking_form.php?mode=edit&amp;id=<?= (int) $booking['id'] ?>">Edit</a>
 
                                     <form method="post" action=""
-                                          onsubmit="return confirm('Hapus booking dari &quot;<?= e(addslashes($booking['booker_name'])) ?>&quot;?');">
+                                          data-confirm-action="delete"
+                                          data-confirm-message="<?= e('Hapus booking dari "' . $booking['booker_name'] . '"?') ?>">
                                         <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?= (int) $booking['id'] ?>">

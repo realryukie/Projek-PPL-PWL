@@ -281,7 +281,8 @@ require __DIR__ . '/includes/header.php';
 
                     <div class="profile-head__actions">
                         <button type="button" id="edit-profile" class="btn btn-orange">Edit Profil</button>
-                        <a class="btn btn-red" href="<?= BASE_URL ?>/auth/logout.php">Log Out</a>
+                        <a class="btn btn-red" href="<?= BASE_URL ?>/auth/logout.php"
+                           data-confirm-action="logout" data-confirm-message="Yakin ingin log out?">Log Out</a>
                     </div>
                 </div>
 
@@ -345,7 +346,8 @@ require __DIR__ . '/includes/header.php';
             <div class="list-head">
                 <h1>Histori</h1>
                 <?php if (!empty($bookings)): ?>
-                    <form method="post" action="" onsubmit="return confirm('Bersihkan semua histori pemesanan?');">
+                    <form method="post" action="" data-confirm-action="delete"
+                          data-confirm-message="Bersihkan semua histori pemesanan?">
                         <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                         <input type="hidden" name="action" value="clear_history">
                         <button type="submit" class="btn btn-red">Bersihkan Histori</button>
@@ -371,7 +373,8 @@ require __DIR__ . '/includes/header.php';
                         <div class="list-card__line small"><?= e(formatDate($booking['check_in_date'])) ?> - <?= e(formatDate($booking['check_out_date'])) ?></div>
                         <span class="badge badge-<?= e($booking['status']) ?>"><?= e(statusLabel($booking['status'])) ?></span>
                     </div>
-                    <form method="post" action="" onsubmit="return confirm('Hapus dari histori?');">
+                    <form method="post" action="" data-confirm-action="delete"
+                          data-confirm-message="Hapus booking ini dari histori?">
                         <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                         <input type="hidden" name="action" value="delete_history">
                         <input type="hidden" name="id" value="<?= (int) $booking['id'] ?>">
@@ -384,7 +387,8 @@ require __DIR__ . '/includes/header.php';
             <div class="list-head">
                 <h1>Favorit</h1>
                 <?php if (!empty($favorites)): ?>
-                    <form method="post" action="" onsubmit="return confirm('Bersihkan semua favorit?');">
+                    <form method="post" action="" data-confirm-action="delete"
+                          data-confirm-message="Bersihkan semua favorit?">
                         <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                         <input type="hidden" name="action" value="clear_favorites">
                         <button type="submit" class="btn btn-red">Bersihkan Favorit</button>
@@ -408,7 +412,8 @@ require __DIR__ . '/includes/header.php';
                             <?= e($favorite['city']) ?>
                         </div>
                     </div>
-                    <form method="post" action="">
+                    <form method="post" action="" data-confirm-action="delete"
+                          data-confirm-message="Hapus kost ini dari favorit?">
                         <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                         <input type="hidden" name="action" value="remove_favorite">
                         <input type="hidden" name="house_id" value="<?= (int) $favorite['id'] ?>">

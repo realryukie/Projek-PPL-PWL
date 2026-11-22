@@ -484,7 +484,8 @@ $flashError = getFlash('error');
                      The Hapus buttons above point to them with the "form" attribute. */ ?>
             <?php foreach ($rooms as $room): ?>
                 <form id="delete-room-<?= (int) $room['id'] ?>" method="post" action="<?= BASE_URL ?>/admin/rooms.php"
-                      onsubmit="return confirm('Hapus kamar &quot;<?= e(addslashes($room['name'])) ?>&quot;?');">
+                      data-confirm-action="delete"
+                      data-confirm-message="<?= e('Hapus kamar "' . $room['name'] . '"?') ?>">
                     <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" value="<?= (int) $room['id'] ?>">

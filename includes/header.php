@@ -134,3 +134,4 @@
         </a>
     </div>
 </header>
+<script src="<?= BASE_URL ?>/assets/js/confirm-actions.js?v=<?= (int) filemtime(__DIR__ . '/../assets/js/confirm-actions.js') ?>" defer></script>

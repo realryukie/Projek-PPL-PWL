@@ -343,7 +343,8 @@ require __DIR__ . '/header.php';
                 </div>
             </dl>
 
-            <form method="post" action="">
+            <form method="post" action=""
+                  <?= $isFavorite ? 'data-confirm-action="delete" data-confirm-message="Hapus kost ini dari favorit?"' : '' ?>>
                 <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                 <input type="hidden" name="action" value="favorite">
                 <button type="submit" class="favorite-button<?= $isFavorite ? ' is-active' : '' ?>">
