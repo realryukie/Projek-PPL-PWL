@@ -49,8 +49,8 @@
     padding: 8px 16px;
     border: 0;
     border-radius: 999px;
-    background: #d9d9d9;
-    color: #111;
+    background: var(--green);
+    color: #fff;
     font: inherit;
     font-size: 13.6px;
     font-weight: 600;
@@ -58,7 +58,7 @@
 }
 
 .favorite-button:hover {
-    background: #cbcbcb;
+    background: var(--green-dark);
 }
 
 .favorite-button.is-active {
@@ -271,7 +271,7 @@
 
 .booking-estimate {
     min-height: 22.4px;
-    margin: 0 0 12px;
+    margin: 0;
     color: var(--green-dark);
     font-size: 13.6px;
     font-weight: 700;
@@ -329,6 +329,16 @@
 
 .booking-form h3 {
     font-size: 15.2px;
+}
+
+#booking .map-grid {
+    align-items: stretch;
+}
+
+#booking .map-preview,
+#booking .map-empty {
+    height: auto;
+    min-height: 245px;
 }
 
 /* Feedback: stars, average and prompt on one row */
